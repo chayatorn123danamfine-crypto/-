@@ -1,0 +1,6 @@
+{
+  "name": "ระบบปรับขนาดยา โรงพยาบาลสุโขทัย",
+  "description": "ระบบคำนวณและปรับขนาดยาสำหรับบุคลากรทางการแพทย์: ปรับขนาดยาตามค่าการทำงานของไต (CrCl) และปรับขนาดยาตามน้ำหนัก (ยาเด็ก, Antibiotics, Antiviral, Warfarin, TB)",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,1319 @@
+Claude
+
+
+Index · HTML
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ระบบปรับขนาดยา</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --pink:#b53a6b; --pink-d:#8c2955; --pink-l:#fbf0f4; --bg:#fff7fa;
+    --bd:#e6d0da; --bg1:#f6f3f5; --bg2:#f1f3f6; --sh:rgba(30,50,70,.09);
+    --ink:#22303a; --muted:#5d6b76; --ok:#1f9d6b; --warn:#c77d00; --bad:#d6354b;
+  }
+  /* ธีมเขียว สำหรับแอพ "ระบบปรับขนาดยาตามน้ำหนัก" */
+  body.green{--pink:#1c8a4e; --pink-d:#126236; --pink-l:#eaf6ef; --bd:#c7e0d2; --bg1:#f1f6f3; --bg2:#edf3f0; --sh:rgba(20,80,50,.10)}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:'Sarabun','Kanit',sans-serif;background:linear-gradient(160deg,var(--bg1),var(--bg2));color:var(--ink);min-height:100vh}
+  .wrap{max-width:560px;margin:0 auto;padding:20px 16px 60px}
+  .card{background:#fff;border-radius:20px;padding:24px;box-shadow:0 8px 30px var(--sh);margin-top:16px}
+  h1{font-size:1.6rem;margin:0 0 4px;color:var(--pink-d);line-height:1.3}
+  h2{font-size:1.2rem;margin:0 0 14px;color:var(--pink-d)}
+  .sub{color:var(--muted);font-size:.9rem;margin:0 0 18px}
+  .hero{text-align:center;padding-top:40px}
+  .hero .icon{font-size:3.2rem}
+  label{display:block;font-size:.9rem;margin:14px 0 6px;font-weight:500}
+  input,select{width:100%;padding:12px 14px;border:2px solid var(--bd);border-radius:12px;font:inherit;background:#fff;color:var(--ink)}
+  input:focus,select:focus{outline:none;border-color:var(--pink)}
+  button{font:inherit;cursor:pointer;border:0;border-radius:12px;padding:13px 18px;font-weight:500}
+  .btn{width:100%;background:var(--pink);color:#fff;margin-top:20px;font-size:1rem}
+  .btn:hover{background:var(--pink-d)}
+  .btn.ghost{background:var(--pink-l);color:var(--pink-d);margin-top:10px}
+  .err{color:var(--bad);font-size:.85rem;margin-top:8px;min-height:1.2em}
+  .hidden{display:none}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .seg{display:flex;gap:10px}
+  .seg button{flex:1;background:#fff;border:2px solid var(--bd);color:var(--ink)}
+  .seg button.on{background:var(--pink);border-color:var(--pink);color:#fff}
+  .result{text-align:center}
+  .big{font-size:3rem;font-weight:600;color:var(--pink-d);line-height:1}
+  .unit{color:var(--muted);font-size:.9rem}
+  .stage{display:inline-block;margin-top:12px;padding:6px 14px;border-radius:999px;font-size:.85rem;font-weight:500;color:#fff}
+  .formula{background:var(--pink-l);border-radius:12px;padding:10px 14px;font-size:.82rem;color:var(--muted);margin-top:16px;text-align:left}
+  .drug{border:2px solid var(--bd);border-radius:14px;padding:14px;margin-top:14px}
+  .drug h3{margin:0 0 2px;font-size:1.1rem}
+  .drug .cls{font-size:.8rem;color:var(--muted);margin-bottom:6px}
+  .grp{font-weight:500;color:var(--pink-d);margin-top:12px;font-size:.9rem;border-bottom:1px dashed var(--bd);padding-bottom:3px}
+  .band{padding:10px 12px;border-radius:10px;margin-top:6px;font-size:.9rem;background:#faf4f7;border:2px solid transparent}
+  .band b{display:block;font-size:.78rem;color:var(--muted);font-weight:500}
+  .band.match{background:#e9f8f1;border-color:var(--ok)}
+  .band.match b{color:var(--ok)}
+  .band.hd{background:#f1ecfb}
+  .note{font-size:.82rem;color:var(--warn);margin-top:10px}
+  .src{display:inline-block;font-size:.72rem;background:#eaf3ff;color:#2b6cb0;padding:2px 8px;border-radius:999px;margin-left:6px;vertical-align:middle}
+  .sec{margin:18px 0 0;font-size:.85rem;color:var(--muted)}
+  .pill{display:inline-block;background:var(--pink-l);color:var(--pink-d);padding:4px 10px;border-radius:999px;font-size:.8rem;margin-bottom:6px}
+  .disc{font-size:.75rem;color:var(--muted);margin-top:22px;text-align:center;line-height:1.5}
+  /* ===== แอพใหม่ "ระบบปรับขนาดยาตามน้ำหนัก" ===== */
+  .menu{display:grid;gap:12px;margin-top:6px}
+  .menu-btn{display:flex;align-items:center;gap:14px;width:100%;text-align:left;background:#fff;border:2px solid var(--bd);border-radius:16px;padding:16px;color:var(--ink)}
+  .menu-btn:hover{border-color:var(--pink)}
+  .menu-btn .mi{font-size:1.9rem}
+  .menu-btn b{display:block;font-size:1.05rem;color:var(--pink-d);font-weight:500}
+  .menu-btn small{color:var(--muted);font-size:.82rem}
+  .menu-btn.g{border-color:#bfe3cd}
+  .menu-btn.g:hover{border-color:#2e9e5b}
+  .menu-btn.g b{color:#1b7a42}
+  .gblock{border:2px solid var(--bd);border-radius:14px;padding:14px;margin-top:14px}
+  .gblock h3{margin:0 0 6px;font-size:1rem;color:var(--pink-d);font-weight:500;line-height:1.4}
+  .gcat{margin-top:22px;font-weight:500;color:#fff;background:var(--pink);border-radius:10px;padding:6px 12px;font-size:.92rem}
+  .gsub{margin-top:10px;font-weight:500;font-size:.85rem;color:var(--pink-d);border-bottom:1px dashed var(--bd);padding-bottom:3px;line-height:1.4}
+  .grow{display:flex;justify-content:space-between;gap:10px;align-items:baseline;padding:8px 10px;margin-top:6px;border-radius:10px;background:var(--pink-l);font-size:.9rem}
+  .grow.hit{background:#c9efd7;outline:2px solid var(--pink)}
+  .gl{color:var(--ink)}
+  .gf{display:inline-block;background:#fff;border-radius:999px;padding:1px 8px;font-size:.75rem;font-weight:500;color:var(--pink-d);margin-right:4px}
+  .gr{font-weight:600;color:var(--pink-d);text-align:right;white-space:nowrap}
+  .gr.t{white-space:normal;font-weight:500}
+  .gu{font-weight:400;color:var(--muted);font-size:.78rem}
+  .gnote{font-size:.8rem;color:var(--warn);margin-top:8px;line-height:1.5}
+  .gwarn{background:#fff4e0;border-radius:10px;padding:8px 12px;font-size:.85rem;color:#8a5a00;margin-top:12px;line-height:1.5}
+  .tbl{width:100%;border-collapse:collapse;font-size:.9rem;margin-top:8px}
+  .tbl th,.tbl td{padding:8px 4px;border:1px solid var(--bd);text-align:center}
+  .tbl th{background:var(--pink-l);color:var(--pink-d);font-weight:500}
+  .tbl tr.hit td{background:#c9efd7;font-weight:600}
+  .wbig{font-size:2.6rem;font-weight:600;color:var(--pink-d);line-height:1.1;text-align:center;margin-top:14px}
+  .wlist{margin:14px 0 0;padding-left:20px;font-size:.88rem;line-height:1.7;color:var(--ink)}
+  .wlist li{margin-bottom:6px}
+ 
+  /* ===== ธีมทางการ (v5) — ทับค่าเดิม ===== */
+  html{font-size:106%}
+  body{line-height:1.5;background:linear-gradient(180deg,var(--bg1),var(--bg2)) fixed}
+  .wrap{padding:8px 16px 56px}
+  .card{position:relative;border:1px solid var(--bd);border-radius:14px;padding:22px;margin-top:16px;animation:cardIn .45s ease both}
+  h1{font-size:1.45rem;font-weight:700;letter-spacing:.1px}
+  h2{font-size:1.12rem;font-weight:600;padding-left:10px;border-left:4px solid var(--pink);line-height:1.3}
+  label{font-weight:500;color:#34424d}
+  input,select{border:1.5px solid var(--bd);border-radius:10px;transition:border-color .2s,box-shadow .2s}
+  input:focus,select:focus{box-shadow:0 0 0 3px color-mix(in srgb,var(--pink) 18%,transparent)}
+  button{border-radius:10px;font-weight:600;transition:transform .15s,box-shadow .2s,background .2s,border-color .2s}
+  .btn{box-shadow:0 2px 6px color-mix(in srgb,var(--pink) 30%,transparent)}
+  .btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px color-mix(in srgb,var(--pink) 35%,transparent)}
+  .btn:active{transform:translateY(0)}
+  .btn.ghost{background:#fff;color:var(--pink-d);border:1.5px solid var(--bd);box-shadow:none}
+  .btn.ghost:hover{background:var(--pink-l);box-shadow:none}
+  .seg button{border-radius:10px}
+  .band{background:#f6f8f9}
+  .band.hd{background:#eef0f6}
+  .drug{border-radius:12px}
+  .stage.pop{animation:pop .5s cubic-bezier(.2,.9,.3,1.3)}
+  .big{font-variant-numeric:tabular-nums}
+ 
+  /* แถบหัวเรื่อง */
+  #bar{background:#fff;border-bottom:3px solid var(--pink);box-shadow:0 1px 8px rgba(20,40,60,.06)}
+  .bar-in{max-width:560px;margin:0 auto;padding:8px 16px;display:flex;align-items:center;gap:12px}
+  .bar-logo{height:44px;width:44px;object-fit:contain}
+  .bar-t{flex:1;min-width:0}
+  .bar-h{font-weight:600;color:var(--pink-d);font-size:.92rem;line-height:1.25}
+  .bar-s{font-size:.72rem;color:var(--muted)}
+  .bar-out{background:#fff;border:1px solid var(--bd);padding:6px 10px;font-size:.76rem;color:var(--muted);font-weight:500;border-radius:8px}
+  .bar-out:hover{background:var(--pink-l);color:var(--pink-d)}
+ 
+  /* หน้าเข้าสู่ระบบ */
+  .peekwrap{position:relative;margin-top:78px}
+  .peekwrap .card{margin-top:0}
+  .hero{padding:26px 22px 22px}
+  .hero .logo{width:150px;height:150px;object-fit:contain;display:block;margin:0 auto 6px;animation:logoIn .7s ease both}
+  .hero h1{margin-top:4px}
+  .fine{font-size:.74rem;color:var(--muted);margin-top:16px}
+  .peek{position:absolute;top:-70px;right:22px;width:88px;height:70px;overflow:hidden;z-index:2;pointer-events:none}
+  .peek svg{display:block;width:88px;animation:peekIn .8s .2s cubic-bezier(.2,.9,.3,1.15) both}
+ 
+  /* เมนู */
+  .menu-btn{border-radius:12px;padding:14px;gap:14px;transition:transform .18s,box-shadow .2s,border-color .2s}
+  .menu-btn:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(20,40,60,.08)}
+  .menu-btn .mi{flex:none;width:44px;height:44px;border-radius:12px;background:var(--pink-l);color:var(--pink);display:flex;align-items:center;justify-content:center;font-size:0}
+  .menu-btn .mi.rose{background:#fbeff4;color:#b53a6b}
+  .menu-btn .mi.grn{background:#eaf6ef;color:#1c8a4e}
+  .menu-btn .mt{flex:1;min-width:0}
+  .menu-btn b{font-size:1rem;font-weight:600;line-height:1.3}
+  .menu-btn small{display:block;margin-top:2px;line-height:1.4}
+  .menu-btn .chev{font-size:1.5rem;color:var(--muted);transition:transform .2s}
+  .menu-btn:hover .chev{transform:translateX(3px);color:var(--pink)}
+  .menu-btn.g{border-color:#c7e0d2}
+  .menu-btn.g b{color:#146236}
+  .ic{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+ 
+  .titlerow{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+  .titlerow h1,.titlerow h2{margin-bottom:6px}
+  .result .titlerow{text-align:left}
+  .greet{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+  .bubble{position:relative;background:var(--pink-l);border:1px solid var(--bd);color:var(--pink-d);border-radius:12px;padding:10px 14px;font-size:.9rem;font-weight:500;animation:bubbleIn .6s .5s ease both}
+  .bubble:before{content:"";position:absolute;left:-7px;top:50%;margin-top:-6px;border:6px solid transparent;border-right-color:var(--bd);border-left:0}
+  .bubble:after{content:"";position:absolute;left:-5px;top:50%;margin-top:-5px;border:5px solid transparent;border-right-color:var(--pink-l);border-left:0}
+ 
+  /* มาสคอตกระต่าย */
+  .mascot{flex:none;width:92px}
+  .mascot.sm{width:62px}
+  .mascot svg,.peek svg{display:block;width:100%;height:auto;overflow:visible}
+  .mascot svg{animation:floaty 4.2s ease-in-out infinite}
+  .m-eyes{transform-origin:70px 80px;animation:blink 5.5s infinite}
+  .m-ear-l{animation:earL 7s ease-in-out infinite}
+  .m-ear-r{animation:earR 7s 1.2s ease-in-out infinite}
+  [data-m="wave"] .m-arm-r{animation:wave 3.8s 1s ease-in-out infinite}
+  [data-m="peek"] .m-low{display:none}
+  .m-paws{display:none}
+  [data-m="peek"] .m-paws{display:inline}
+ 
+  /* Warfarin */
+  .tabinfo{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:.85rem;margin:2px 0 4px;color:#34424d}
+  .tabinfo span{display:inline-flex;align-items:center;gap:6px}
+  .tdot{display:inline-block;width:14px;height:14px;border-radius:50%;border:1.5px solid rgba(0,0,0,.28);vertical-align:-2px;flex:none}
+  .tdot.w{background:#fff}
+  .tdot.b{background:#6bb7f2}
+  .tdot.p{background:#f59bbd}
+  .hint{font-size:.8rem;color:var(--muted);margin:2px 0 8px;line-height:1.5}
+  .wcol{margin-top:10px;padding:10px;border:1px solid var(--bd);border-radius:12px;background:#fbfcfc}
+  .wch{display:flex;align-items:center;gap:8px;font-size:.88rem;flex-wrap:wrap}
+  .wch .wsp{flex:1}
+  .wch select{width:auto;padding:5px 8px;font-size:.82rem;border-radius:8px}
+  .mini{padding:5px 10px;font-size:.76rem;background:#fff;border:1.5px solid var(--bd);color:var(--pink-d);border-radius:8px}
+  .mini:hover{background:var(--pink-l)}
+  .wdays{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:8px}
+  .dchip{position:relative;display:block;margin:0}
+  .dchip input{position:absolute;opacity:0;width:100%;height:100%;margin:0;cursor:pointer}
+  .dchip span{display:flex;align-items:center;justify-content:center;height:38px;border:1.5px solid var(--bd);border-radius:9px;font-size:.78rem;font-weight:500;color:var(--muted);background:#fff;transition:all .15s}
+  .dchip input:checked + span{background:var(--pink);border-color:var(--pink);color:#fff}
+  .dchip input:focus-visible + span{box-shadow:0 0 0 3px color-mix(in srgb,var(--pink) 25%,transparent)}
+  .wsum{font-size:.85rem;color:var(--pink-d);font-weight:600;margin:10px 0 2px;min-height:1.2em}
+  .wtbl td,.wtbl th{font-size:.82rem}
+  .wtbl td.l{text-align:left;padding-left:8px}
+  .wtbl tr.chg td{background:#fff7e0}
+  .wtbl .tdot{margin:0 2px 0 4px}
+  .wtbl tfoot td{font-weight:600;background:var(--pink-l)}
+  .plan{border:1.5px solid var(--pink);border-radius:14px;padding:14px;margin-top:14px;background:#fff;animation:cardIn .4s ease both}
+  .plan h3{margin:0 0 8px;font-size:1rem;color:var(--pink-d);font-weight:600}
+  .plan .line{padding:9px 12px;border-radius:10px;background:var(--pink-l);margin-top:6px;font-size:.92rem;line-height:1.5}
+  .plan .ok{color:#146236;font-weight:600;font-size:.86rem;margin-top:10px}
+  .plan .chgtxt{font-size:.88rem;margin-top:8px;color:#34424d}
+ 
+  @keyframes cardIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  @keyframes logoIn{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:none}}
+  @keyframes bubbleIn{from{opacity:0;transform:translateX(-6px)}to{opacity:1;transform:none}}
+  @keyframes pop{0%{transform:scale(.8);opacity:0}100%{transform:scale(1);opacity:1}}
+  @keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+  @keyframes blink{0%,91%,100%{transform:scaleY(1)}95%{transform:scaleY(.08)}}
+  @keyframes earL{0%,70%,100%{transform:rotate(0)}78%{transform:rotate(-6deg)}86%{transform:rotate(2deg)}}
+  @keyframes earR{0%,70%,100%{transform:rotate(0)}78%{transform:rotate(6deg)}86%{transform:rotate(-2deg)}}
+  @keyframes wave{0%,55%,100%{transform:rotate(0)}62%{transform:rotate(-26deg)}70%{transform:rotate(6deg)}78%{transform:rotate(-24deg)}86%{transform:rotate(0)}}
+  @keyframes peekIn{from{transform:translateY(46px)}to{transform:none}}
+  @media (prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-drop" viewBox="0 0 24 24"><path d="M12 3c3.5 4.2 6 7.2 6 10.2A6 6 0 0 1 6 13.2C6 10.2 8.5 7.2 12 3z"/></symbol>
+    <symbol id="i-scale" viewBox="0 0 24 24"><path d="M12 4v16M7 20h10M5 8h14M5 8l-3 7a4 4 0 0 0 6 0zM19 8l-3 7a4 4 0 0 0 6 0z"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20v-1a7 7 0 0 1 14 0v1"/></symbol>
+    <symbol id="i-pill" viewBox="0 0 24 24"><rect x="2.5" y="8.5" width="19" height="7" rx="3.5" transform="rotate(-45 12 12)"/><path d="M9.5 9.5l5 5"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l7.5 2.8v5.7c0 4.6-3.2 7.6-7.5 9.5-4.3-1.9-7.5-4.9-7.5-9.5V5.8z"/><path d="M9 12l2.2 2.2L15.2 10"/></symbol>
+    <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/></symbol>
+    <symbol id="i-pulse" viewBox="0 0 24 24"><path d="M3 12h4l2.2-6 4 12 2.3-6H21"/></symbol>
+  </defs>
+</svg>
+ 
+<header id="bar" class="hidden">
+  <div class="bar-in">
+    <img id="barLogo" class="bar-logo" alt="ตราสัญลักษณ์โรงพยาบาลสุโขทัย">
+    <div class="bar-t"><div class="bar-h" id="barTitle">ระบบปรับขนาดยา</div><div class="bar-s">สำหรับบุคลากรทางการแพทย์</div></div>
+    <button type="button" class="bar-out" onclick="logout()">ออกจากระบบ</button>
+  </div>
+</header>
+ 
+<div class="wrap">
+ 
+  <!-- หน้า 1: เข้าสู่ระบบ -->
+  <div id="p1" class="peekwrap">
+    <div class="peek" data-m="peek" aria-hidden="true"></div>
+    <section class="card hero">
+      <img id="loginLogo" class="logo" alt="ตราสัญลักษณ์โรงพยาบาลสุโขทัย" src="data:image/jpeg;base64,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">
+      <h1>ระบบปรับขนาดยา</h1>
+      <p class="sub">กรุณาใส่รหัสผ่านเพื่อเข้าใช้งาน</p>
+      <input id="pw" type="password" inputmode="numeric" placeholder="รหัสผ่าน" autocomplete="off" aria-label="รหัสผ่าน">
+      <div class="err" id="pwErr"></div>
+      <button class="btn" onclick="checkPw()">เข้าสู่ระบบ</button>
+      <div class="fine">สำหรับบุคลากรทางการแพทย์</div>
+    </section>
+  </div>
+ 
+  <!-- เมนูหลัก: เลือกระบบ -->
+  <section id="pm" class="card hidden">
+    <div class="greet">
+      <div class="mascot" data-m="wave" aria-hidden="true"></div>
+      <div class="bubble">สวัสดีค่ะ เลือกระบบที่ต้องการใช้งานได้เลย</div>
+    </div>
+    <h2>เลือกระบบที่ต้องการใช้งาน</h2>
+    <div class="menu">
+      <button class="menu-btn" onclick="show('p2')">
+        <span class="mi rose"><svg class="ic"><use href="#i-drop"/></svg></span>
+        <span class="mt"><b>ระบบปรับขนาดยาตามค่าการทำงานของไต</b><small>คำนวณค่า CrCl และปรับขนาดยาต้านจุลชีพตามการทำงานของไต</small></span>
+        <span class="chev">›</span>
+      </button>
+      <button class="menu-btn g" onclick="show('g0')">
+        <span class="mi grn"><svg class="ic"><use href="#i-scale"/></svg></span>
+        <span class="mt"><b>ระบบปรับขนาดยาตามน้ำหนัก</b><small>ยาเด็ก · Antibiotics · Antiviral · Warfarin · TB</small></span>
+        <span class="chev">›</span>
+      </button>
+    </div>
+  </section>
+ 
+  <!-- หน้า 2: ข้อมูลผู้ป่วย -->
+  <section id="p2" class="card hidden">
+    <h2>ข้อมูลผู้ป่วย</h2>
+    <label>เพศ</label>
+    <div class="seg">
+      <button type="button" id="gM" onclick="setSex('M')">ชาย</button>
+      <button type="button" id="gF" onclick="setSex('F')">หญิง</button>
+    </div>
+    <div class="row">
+      <div><label>อายุ (ปี)</label><input id="age" type="number" inputmode="decimal" min="1" max="120" placeholder="เช่น 65"></div>
+      <div><label>น้ำหนัก (กก.)</label><input id="wt" type="number" inputmode="decimal" min="1" max="300" placeholder="เช่น 60"></div>
+    </div>
+    <label>Serum creatinine (mg/dL)</label>
+    <input id="scr" type="number" inputmode="decimal" step="0.01" min="0.1" max="30" placeholder="เช่น 1.2">
+    <div class="err" id="ptErr"></div>
+    <button class="btn" onclick="calcCrCl()">คำนวณ CrCl</button>
+    <button class="btn ghost" onclick="show('pm')">← กลับเมนูหลัก</button>
+  </section>
+ 
+  <!-- หน้า 3: ผล CrCl -->
+  <section id="p3" class="card hidden result">
+    <div class="titlerow"><h2>ผลการคำนวณ</h2><div class="mascot sm" data-m="sit" aria-hidden="true"></div></div>
+    <div class="unit">Creatinine Clearance (Cockcroft-Gault)</div>
+    <div class="big" id="crclVal">-</div>
+    <div class="unit">mL/min</div>
+    <div class="stage" id="stage"></div>
+    <div class="formula" id="formula"></div>
+    <button class="btn" onclick="show('p4')">ไปหน้าค้นหายา →</button>
+    <button class="btn ghost" onclick="show('p2')">← แก้ไขข้อมูลผู้ป่วย</button>
+  </section>
+ 
+  <!-- หน้า 4: ค้นหายา -->
+  <section id="p4" class="card hidden">
+    <h2>ปรับขนาดยาตาม CrCl</h2>
+    <span class="pill" id="crclPill"></span>
+    <label>พิมพ์ชื่อยา (ไทย/อังกฤษ)</label>
+    <input id="drugIn" list="drugList" placeholder="เช่น meropenem, เมโรพีเนม" autocomplete="off" oninput="renderDrug()">
+    <datalist id="drugList"></datalist>
+    <div class="sec">ป้าย <span class="src">ตาราง ม.ธรรมศาสตร์ 2022</span> = ข้อมูลอ้างอิงจาก “ขนาดยาต้านจุลชีพที่แนะนำสำหรับผู้ป่วยวัยผู้ใหญ่ที่มีการทำงานของไตบกพร่อง” (หน่วยโรคติดเชื้อ ม.ธรรมศาสตร์ Version 2022)</div>
+    <div id="drugOut"></div>
+    <button class="btn ghost" onclick="show('p3')">← กลับไปดูผล CrCl</button>
+    <button class="btn ghost" onclick="show('p2')">ผู้ป่วยรายใหม่</button>
+    <div class="disc">ข้อมูลใช้เพื่อประกอบการพิจารณาของบุคลากรทางการแพทย์เท่านั้น<br>ควรตรวจสอบกับเอกสารกำกับยา/แนวทางล่าสุด และพิจารณาอาการทางคลินิกของผู้ป่วยร่วมด้วยเสมอ</div>
+  </section>
+ 
+  <!-- ===== ระบบปรับขนาดยาตามน้ำหนัก (ธีมเขียว) ===== -->
+ 
+  <section id="g0" class="card hidden">
+    <div class="titlerow">
+      <div><h1>ระบบปรับขนาดยาตามน้ำหนัก</h1><p class="sub">เลือกเครื่องมือคำนวณขนาดยา</p></div>
+      <div class="mascot sm" data-m="sit" aria-hidden="true"></div>
+    </div>
+    <div class="menu">
+      <button class="menu-btn" onclick="show('gk')"><span class="mi"><svg class="ic"><use href="#i-user"/></svg></span><span class="mt"><b>คำนวณขนาดยาเด็ก</b><small>แก้ปวด/ลดไข้ · NSAIDs · แก้แพ้ · แก้คลื่นไส้ · ละลายเสมหะ/ไอ</small></span><span class="chev">›</span></button>
+      <button class="menu-btn" onclick="show('gb')"><span class="mi"><svg class="ic"><use href="#i-pill"/></svg></span><span class="mt"><b>ปรับยา Antibiotics (เด็ก)</b><small>Amoxicillin, Augmentin, Cephalexin, Azithromycin ฯลฯ</small></span><span class="chev">›</span></button>
+      <button class="menu-btn" onclick="show('gv')"><span class="mi"><svg class="ic"><use href="#i-shield"/></svg></span><span class="mt"><b>ปรับยา Antiviral (เด็ก)</b><small>Tamiflu, Acyclovir</small></span><span class="chev">›</span></button>
+      <button class="menu-btn" onclick="show('gw')"><span class="mi"><svg class="ic"><use href="#i-cal"/></svg></span><span class="mt"><b>ปรับยา Warfarin</b><small>คำนวณร้อยละการปรับยา และจัดรูปแบบเม็ดยาตามขนาดใหม่</small></span><span class="chev">›</span></button>
+      <button class="menu-btn" onclick="show('gt')"><span class="mi"><svg class="ic"><use href="#i-pulse"/></svg></span><span class="mt"><b>ปรับยา TB</b><small>ขนาดยาวัณโรคตามน้ำหนักตัว (I, R, Z, E)</small></span><span class="chev">›</span></button>
+    </div>
+    <button class="btn ghost" onclick="show('pm')">← กลับเมนูหลัก</button>
+  </section>
+ 
+  <section id="gk" class="card hidden">
+    <h2>คำนวณขนาดยาเด็ก</h2>
+    <label>น้ำหนักเด็ก (กก.)</label>
+    <input id="kwk" type="number" inputmode="decimal" min="0" step="0.1" placeholder="เช่น 10" oninput="onKW(this)">
+    <label>ค้นหายา</label>
+    <input id="kfk" type="text" placeholder="เช่น paracetamol, cetirizine" autocomplete="off" oninput="renderKids()">
+    <div id="ko-gk"></div>
+    <button class="btn ghost" onclick="show('g0')">← กลับเมนูระบบปรับขนาดยาตามน้ำหนัก</button>
+    <div class="disc">ผลการคำนวณเป็นค่าประมาณ ควรปัดขนาดยาให้เหมาะกับรูปแบบยา และตรวจสอบขนาดสูงสุดต่อครั้ง/ต่อวันก่อนใช้จริง</div>
+  </section>
+ 
+  <section id="gb" class="card hidden">
+    <h2>ปรับยา Antibiotics (เด็ก)</h2>
+    <label>น้ำหนักเด็ก (กก.)</label>
+    <input id="kwb" type="number" inputmode="decimal" min="0" step="0.1" placeholder="เช่น 10" oninput="onKW(this)">
+    <label>ค้นหายา</label>
+    <input id="kfb" type="text" placeholder="เช่น amoxicillin, azithromycin" autocomplete="off" oninput="renderKids()">
+    <div id="ko-gb"></div>
+    <button class="btn ghost" onclick="show('g0')">← กลับเมนูระบบปรับขนาดยาตามน้ำหนัก</button>
+    <div class="disc">ผลการคำนวณเป็นค่าประมาณ ควรปัดขนาดยาให้เหมาะกับรูปแบบยา และตรวจสอบขนาดสูงสุดต่อครั้ง/ต่อวันก่อนใช้จริง</div>
+  </section>
+ 
+  <section id="gv" class="card hidden">
+    <h2>ปรับยา Antiviral (เด็ก)</h2>
+    <label>น้ำหนักเด็ก (กก.)</label>
+    <input id="kwv" type="number" inputmode="decimal" min="0" step="0.1" placeholder="เช่น 25" oninput="onKW(this)">
+    <div id="ko-gv"></div>
+    <button class="btn ghost" onclick="show('g0')">← กลับเมนูระบบปรับขนาดยาตามน้ำหนัก</button>
+    <div class="disc">ผลการคำนวณเป็นค่าประมาณ ควรปัดขนาดยาให้เหมาะกับรูปแบบยา และตรวจสอบขนาดสูงสุดต่อครั้ง/ต่อวันก่อนใช้จริง</div>
+  </section>
+ 
+  <!-- Warfarin -->
+  <section id="gw" class="card hidden">
+    <h2>ปรับยา Warfarin</h2>
+    <div class="tabinfo">
+      <span><i class="tdot w"></i>เม็ดสีขาว <b>1 mg</b></span>
+      <span><i class="tdot b"></i>เม็ดสีฟ้า <b>3 mg</b></span>
+      <span><i class="tdot p"></i>เม็ดสีชมพู <b>5 mg</b></span>
+    </div>
+ 
+    <div class="gblock">
+      <h3>1. ขนาดยาเดิมที่ผู้ป่วยรับประทาน</h3>
+      <div class="hint">ติ๊กวันที่รับประทานของเม็ดยาแต่ละสี (ไม่บังคับ) ระบบจะรวมเป็น mg/สัปดาห์ให้อัตโนมัติ และใช้เปรียบเทียบกับรูปแบบใหม่</div>
+      <div id="wfGrid"></div>
+      <div class="wsum" id="wfSum"></div>
+      <label>Dose เดิม (mg/wk)</label>
+      <input id="wfo" type="number" inputmode="decimal" min="0" step="0.5" placeholder="เช่น 21" oninput="wfManual()">
+    </div>
+ 
+    <div class="gblock">
+      <h3>2. ขนาดยาที่ต้องการปรับใหม่</h3>
+      <label>Dose ปรับใหม่ (mg/wk)</label>
+      <input id="wfn" type="number" inputmode="decimal" min="0" step="0.5" placeholder="เช่น 28" oninput="renderWF()">
+    </div>
+ 
+    <div id="wfOut"></div>
+    <div id="wfPlan"></div>
+ 
+    <ol class="wlist">
+      <li>คำนวณขนาดยา warfarin ทั้งสัปดาห์ (total weekly dose; TWD) ทุกครั้งว่ามีการเปลี่ยนแปลงหรือไม่<br>→ หากมีการปรับขนาดยา เปอร์เซ็นต์ปรับยาแต่ละครั้งประมาณร้อยละ 20</li>
+      <li>ตรวจสอบระดับ INR ว่า in target หรือไม่ (target INR 2–3 กรณี MVR 2.5–3.5) พิจารณาขนาดยาให้เหมาะสม</li>
+      <li>ตรวจสอบขนาดยาให้ตรงกับขนาดยา TWD ที่เภสัชกรประจำคลินิก note ใน HosXP</li>
+      <li>ตรวจสอบรายการใน HosXP หากแพทย์มีการคีย์คำสั่ง “warfarin consult เภสัช” ให้ส่งผู้ป่วยพบเภสัชกรประจำคลินิกก่อนจ่ายยาทุกครั้ง</li>
+      <li>พิจารณายาที่เกิด Major Drug interaction ตามคู่ยาอันตรกิริยาระหว่างยา (Drug interaction) ในโรงพยาบาลสุโขทัย</li>
+    </ol>
+    <button class="btn ghost" onclick="show('g0')">← กลับเมนูระบบปรับขนาดยาตามน้ำหนัก</button>
+  </section>
+ 
+  <section id="gt" class="card hidden">
+    <h2>ปรับยา TB</h2>
+    <label>น้ำหนัก (กก.)</label>
+    <input id="tbw" type="number" inputmode="decimal" min="0" step="0.1" placeholder="เช่น 49" oninput="renderTB()">
+    <div id="tbOut"></div>
+    <button class="btn ghost" onclick="show('g0')">← กลับเมนูระบบปรับขนาดยาตามน้ำหนัก</button>
+    <div class="disc">I = Isoniazid · R = Rifampicin · Z = Pyrazinamide · E = Ethambutol</div>
+  </section>
+ 
+</div>
+ 
+<script>
+const PASSWORD = "12367";
+let sex = null, crcl = null;
+ 
+const NAME_RENAL = "ระบบปรับขนาดยาตามค่าการทำงานของไต", NAME_WEIGHT = "ระบบปรับขนาดยาตามน้ำหนัก";
+const BAR = {pm:"ระบบปรับขนาดยา", p2:NAME_RENAL, p3:NAME_RENAL, p4:NAME_RENAL, g0:NAME_WEIGHT, gk:NAME_WEIGHT, gb:NAME_WEIGHT, gv:NAME_WEIGHT, gw:NAME_WEIGHT, gt:NAME_WEIGHT};
+const PAGES = ["p1","pm","p2","p3","p4","g0","gk","gb","gv","gw","gt"];
+function show(id){
+  PAGES.forEach(p => document.getElementById(p).classList.toggle("hidden", p !== id));
+  document.body.classList.toggle("green", id.charAt(0) === "g");   // หน้าของระบบปรับขนาดยาตามน้ำหนักใช้ธีมเขียว
+  document.getElementById("bar").classList.toggle("hidden", id === "p1");
+  if (BAR[id]) document.getElementById("barTitle").textContent = BAR[id];
+  window.scrollTo(0,0);
+  if (id === "p4") { document.getElementById("crclPill").textContent = "CrCl = " + crcl.toFixed(1) + " mL/min"; renderDrug(); }
+}
+ 
+function checkPw(){
+  const v = document.getElementById("pw").value.trim();
+  if (v === PASSWORD){ try{sessionStorage.setItem("ok","1")}catch(e){} show("pm"); }
+  else document.getElementById("pwErr").textContent = "รหัสผ่านไม่ถูกต้อง กรุณาลองอีกครั้ง";
+}
+document.getElementById("pw").addEventListener("keydown", e => { if(e.key==="Enter") checkPw(); });
+try{ if(sessionStorage.getItem("ok")==="1") show("pm"); }catch(e){}
+ 
+function setSex(s){
+  sex = s;
+  document.getElementById("gM").classList.toggle("on", s==="M");
+  document.getElementById("gF").classList.toggle("on", s==="F");
+}
+ 
+function calcCrCl(){
+  const age = parseFloat(document.getElementById("age").value);
+  const wt  = parseFloat(document.getElementById("wt").value);
+  const scr = parseFloat(document.getElementById("scr").value);
+  const err = document.getElementById("ptErr");
+  if (!sex) return err.textContent = "กรุณาเลือกเพศ";
+  if (!(age>0) || !(wt>0) || !(scr>0)) return err.textContent = "กรุณากรอกอายุ น้ำหนัก และ Serum creatinine ให้ครบ";
+  if (age >= 140) return err.textContent = "อายุไม่ถูกต้อง";
+  err.textContent = "";
+ 
+  // CrCl = (140 - อายุ) × น้ำหนัก / (72 × SCr)  ; หญิง × 0.85
+  let v = ((140 - age) * wt) / (72 * scr);
+  if (sex === "F") v *= 0.85;
+  crcl = v;
+ 
+  animateNum(document.getElementById("crclVal"), v, 1);
+  let st, col;
+  if (v >= 90){ st="ปกติ (≥ 90)"; col="#1f9d6b"; }
+  else if (v >= 60){ st="ลดลงเล็กน้อย (60–89)"; col="#6aa84f"; }
+  else if (v >= 30){ st="ลดลงปานกลาง (30–59)"; col="#d98a00"; }
+  else if (v >= 15){ st="ลดลงรุนแรง (15–29)"; col="#e0622b"; }
+  else { st="ไตวายระยะสุดท้าย (< 15)"; col="#d6354b"; }
+  const s = document.getElementById("stage"); s.textContent = st; s.style.background = col; s.classList.remove("pop"); void s.offsetWidth; s.classList.add("pop");
+  document.getElementById("formula").innerHTML =
+    "สูตร: (140 − " + age + ") × " + wt + " ÷ (72 × " + scr + ")" + (sex==="F" ? " × 0.85 (เพศหญิง)" : "") +
+    "<br>หมายเหตุ: ใช้น้ำหนักจริงตามที่กรอก หากผู้ป่วยอ้วนหรือผอมมาก ควรพิจารณาใช้ IBW/AdjBW";
+  show("p3");
+}
+ 
+/* ===== ฐานข้อมูลยา (ผู้ใหญ่) =====
+   rule = [min, max, ข้อความ]  หรือ  [min, max, ป้ายช่วง CrCl, ข้อความ]   (min ≤ CrCl < max)
+   g = กลุ่มย่อย (เช่น ความรุนแรง)  { l: ชื่อกลุ่ม, r: rules, hd: ขนาดยาเมื่อฟอกไต (Intermittent HD) }
+   src:1 = มาจากตาราง ม.ธรรมศาสตร์ 2022
+   หมายเหตุ: ค่า ">50" ใช้ขอบล่าง 50.1 เพราะเทียบกับ CrCl ที่ปัดทศนิยม 1 ตำแหน่ง */
+const G = 1e9;
+const NOTE_CARBA = "ครั้งแรกพิจารณาให้หยดใน 30 นาที ครั้งถัดไปจึงค่อยปรับเป็นหยดนานขึ้น เช่น meropenem, imipenem, doripenem อาจหยดนาน 3 ชม.";
+const NOTE_SULB = "หากต้องการใช้ sulbactam ขนาดสูงเพื่อรักษาเชื้อดื้อยาหลายขนาน กรุณาปรึกษาหน่วยโรคติดเชื้อ";
+const NC = "ไม่ต้องปรับขนาดยา";
+// ยาที่แบ่งช่วงตามหัวตาราง: CrCl > 50 / 10–50 / < 10 + ผู้ป่วยฟอกไต (IHD)
+function std(n, th, c, a, b, d, hd, note){
+  return {n, th, c, g:[{l:"", r:[[50.1,G,"CrCl > 50",a],[10,50.1,"CrCl 10–50",b],[0,10,"CrCl < 10",d]], hd}], note};
+}
+ 
+const DRUGS = [
+ /* ---------- จากตาราง ม.ธรรมศาสตร์ 2022 ---------- */
+ {n:"Ceftazidime 1 g", th:"เซฟตาซิดีม", c:"Cephalosporin gen 3 (antipseudomonal)", src:1, g:[
+   {l:"Mild – Moderate", r:[[50.1,G,"CrCl > 50","1 g ทุก 8 ชม."],[30,50.1,"CrCl 30–50","1 g ทุก 12 ชม."],[10,30,"CrCl 10–29","1 g ทุก 24 ชม."],[0,10,"CrCl < 10","500 mg ทุก 24 ชม."]], hd:"500 mg ทุก 24 ชม. (วันที่ HD ให้หลัง HD)"},
+   {l:"Severe", r:[[50.1,G,"CrCl > 50","2 g ทุก 8 ชม."],[30,50.1,"CrCl 30–50","2 g ทุก 12 ชม."],[10,30,"CrCl 10–29","2 g ทุก 24 ชม."],[0,10,"CrCl < 10","1 g ทุก 24 ชม."]], hd:"1 g ทุก 24 ชม. (วันที่ HD ให้หลัง HD)"}]},
+ 
+ {n:"Cefepime 1 g", th:"เซฟีพิม", c:"Cephalosporin gen 4", src:1, g:[
+   {l:"", r:[[61,G,"CrCl ≥ 61","2 g ทุก 8 ชม."],[50.1,61,"CrCl 50–60","1 g ทุก 8 ชม."],[30,50.1,"CrCl 30–50","1 g ทุก 8 ชม."],[10,30,"CrCl 10–29","1 g ทุก 12 ชม."],[0,10,"CrCl < 10","1 g ทุก 24 ชม."]], hd:"1 g ทุก 24 ชม. (วันที่ HD ให้หลัง HD)"}]},
+ 
+ {n:"Ceftaroline 600 mg", th:"เซฟตาโรลีน", c:"Cephalosporin (anti-MRSA)", src:1, g:[
+   {l:"Mild – Moderate", r:[[50.1,G,"CrCl > 50","600 mg ทุก 12 ชม."],[31,50.1,"CrCl 31–50","400 mg ทุก 12 ชม."],[15,31,"CrCl 15–30","300 mg ทุก 12 ชม."],[10,15,"CrCl ≤ 14 (10–14)","200 mg ทุก 12 ชม."],[0,10,"CrCl < 10","200 mg ทุก 12 ชม."]], hd:"200 mg ทุก 12 ชม."},
+   {l:"Severe", r:[[50.1,G,"CrCl > 50","600 mg ทุก 8 ชม."],[31,50.1,"CrCl 31–50","400 mg ทุก 8 ชม."],[15,31,"CrCl 15–30","300 mg ทุก 8 ชม."],[10,15,"CrCl ≤ 14 (10–14)","200 mg ทุก 8 ชม."],[0,10,"CrCl < 10","200 mg ทุก 8 ชม."]], hd:"200 mg ทุก 8 ชม."}]},
+ 
+ {n:"Piperacillin 4 g/Tazobactam 500 mg", th:"ไพเพอราซิลลิน/ทาโซแบคแทม", c:"Antipseudomonal penicillin + β-lactamase inhibitor", src:1, g:[
+   {l:"", r:[[50.1,G,"CrCl > 50","4.5 g ทุก 6–8 ชม."],[41,50.1,"CrCl 41–50","4.5 g ทุก 6–8 ชม."],[20,41,"CrCl 20–40","4.5 g ทุก 8 ชม."],[10,20,"CrCl 10–19","4.5 g ทุก 12 ชม."],[0,10,"CrCl < 10","4.5 g ทุก 12 ชม. (หรือ 2.25 g ทุก 6 ชม.)"]], hd:"4.5 g ทุก 12 ชม. + 2.25 g หลังฟอกไต (หรือ 2.25 g ทุก 8 ชม. + 750 mg หลังฟอกไต)"}],
+   note:"แนะนำหยดยาใน 4 ชม. · " + NOTE_CARBA.split(" เช่น")[0]},
+ 
+ {n:"Cefoperazone 500 mg/Sulbactam 500 mg", th:"เซโฟเพอราโซน/ซัลแบคแทม", c:"Cephalosporin + β-lactamase inhibitor", src:1, g:[
+   {l:"", r:[[50.1,G,"CrCl > 50","Mild–Moderate: 2 g ทุก 12 ชม. | Severe: 3 g ทุก 12 ชม. (ไม่ใช้กับ MDR-A. baumannii)"],[31,50.1,"CrCl 31–50","2 g ทุก 12 ชม."],[15,31,"CrCl 15–30","1 g ทุก 12 ชม."],[10,15,"CrCl ≤ 14 (10–14)","500 mg ทุก 12 ชม."],[0,10,"CrCl < 10","500 mg ทุก 12 ชม."]], hd:"500 mg ทุก 12 ชม. (วันที่ HD ให้หลัง HD)"}],
+   note:"Cefoperazone > 4.5 g/วัน เพิ่มความเสี่ยงเลือดออก"},
+ 
+ {n:"Ceftolozane 1 g/Tazobactam 0.5 g", th:"เซฟโทโลเซน/ทาโซแบคแทม", c:"Cephalosporin + β-lactamase inhibitor", src:1, g:[
+   {l:"Mild – Moderate", r:[[50.1,G,"CrCl > 50","1.5 g ทุก 8 ชม."],[30,50.1,"CrCl 30–50","750 mg ทุก 8 ชม."],[15,30,"CrCl 15–29","375 mg ทุก 8 ชม."],[10,15,"CrCl ≤ 14 (10–14)","150 mg ทุก 8 ชม."],[0,10,"CrCl < 10","150 mg ทุก 8 ชม."]], hd:"150 mg ทุก 8 ชม. (วันที่ HD ให้หลัง HD)"},
+   {l:"Severe", r:[[50.1,G,"CrCl > 50","3 g ทุก 8 ชม."],[30,50.1,"CrCl 30–50","1.5 g ทุก 8 ชม."],[15,30,"CrCl 15–29","750 mg ทุก 8 ชม."],[10,15,"CrCl ≤ 14 (10–14)","450 mg ทุก 8 ชม."],[0,10,"CrCl < 10","450 mg ทุก 8 ชม."]], hd:"450 mg ทุก 8 ชม. (วันที่ HD ให้หลัง HD)"}]},
+ 
+ {n:"Ceftazidime 2 g/Avibactam 0.5 g", th:"เซฟตาซิดีม/อะวิแบคแทม", c:"Cephalosporin + β-lactamase inhibitor", src:1, g:[
+   {l:"", r:[[50.1,G,"CrCl > 50","2.5 g ทุก 8 ชม."],[31,50.1,"CrCl 31–50","1.25 g ทุก 8 ชม."],[16,31,"CrCl 16–30","0.94 g ทุก 12 ชม."],[10,16,"CrCl 10–15","0.94 g ทุก 24 ชม."],[6,10,"CrCl 6–10","0.94 g ทุก 24 ชม."],[0,6,"CrCl ≤ 5","0.94 g ทุก 48 ชม."]], hd:"0.94 g ทุก 48 ชม. (วันที่ HD ให้หลัง HD)"}],
+   note:"หยดยาใน 2 ชม."},
+ 
+ {n:"Ciprofloxacin 200 mg (IV)", th:"ซิโปรฟลอกซาซิน (ฉีด)", c:"Fluoroquinolone", src:1, g:[
+   {l:"", r:[[50.1,G,"CrCl > 50","ทั่วไป: 400 mg ทุก 12 ชม. | P. aeruginosa: 400 mg ทุก 8 ชม."],[31,50.1,"CrCl 31–50","ไม่ต้องปรับขนาดยา"],[10,31,"CrCl ≤ 30 (10–30)","400 mg ทุก 24 ชม."],[0,10,"CrCl < 10","400 mg ทุก 24 ชม."]], hd:"200–400 mg ทุก 24 ชม."}]},
+ 
+ {n:"Levofloxacin 500 mg", th:"เลโวฟลอกซาซิน", c:"Fluoroquinolone", src:1, g:[
+   {l:"Usual doses", r:[[50.1,G,"CrCl > 50","500 mg ทุก 24 ชม."],[20,50.1,"CrCl 20–49","500 mg ครั้งแรก แล้ว 250 mg ทุก 24 ชม."],[10,20,"CrCl 10–19","500 mg ครั้งแรก แล้ว 250 mg ทุก 48 ชม."],[0,10,"CrCl < 10","500 mg ครั้งแรก แล้ว 250 mg ทุก 48 ชม."]], hd:"500 mg ครั้งแรก แล้ว 250 mg ทุก 48 ชม."},
+   {l:"Severe", r:[[50.1,G,"CrCl > 50","750 mg ทุก 24 ชม."],[20,50.1,"CrCl 20–49","750 mg ทุก 48 ชม."],[10,20,"CrCl 10–19","750 mg ครั้งแรก แล้ว 500 mg ทุก 48 ชม."],[0,10,"CrCl < 10","750 mg ครั้งแรก แล้ว 500 mg ทุก 48 ชม."]], hd:"750 mg ครั้งแรก แล้ว 500 mg ทุก 48 ชม."}]},
+ 
+ {n:"Vancomycin 500 mg", th:"แวนโคมัยซิน", c:"Glycopeptide", src:1, g:[
+   {l:"Loading dose (LD): 25–30 mg/kg × 1 ครั้ง", r:[[50.1,G,"CrCl > 50","15–20 mg/kg ทุก 8–12 ชม."],[30,50.1,"CrCl 30–50","15–20 mg/kg ทุก 24 ชม."],[10,30,"CrCl 10–29","15–20 mg/kg ทุก 48 ชม."],[0,10,"CrCl < 10","15–20 mg/kg × 1 ครั้ง และปรับตามระดับยา"]], hd:"15 mg/kg × 1 ครั้ง และปรับตามระดับยา"}],
+   note:"ความเข้มข้นสูงสุด 5 mg/mL ใน NSS หรือ D5W, อัตราหยดสูงสุด 10 mg/min · ตรวจระดับยาเป้าหมาย AUC/MIC 400–600 (หรือประมาณ 10–20 mg/L) · ไตปกติ: เจาะระดับยาก่อนให้ dose ที่ 4 อย่างน้อย 30 นาที · ไตแปรปรวน เช่น AKI หรือได้รับการล้างไต (CRRT/HD) ปรึกษาเภสัชกรหรือหน่วยโรคติดเชื้อ"},
+ 
+ {n:"Teicoplanin 200 mg", th:"ไทโคพลานิน", c:"Glycopeptide", src:1, g:[
+   {l:"Septic arthritis หรือ Endocarditis", r:[[50.1,G,"CrCl > 50","12 mg/kg ทุก 12 ชม. × 3 doses แล้ว 12 mg/kg/วัน"],[10,50.1,"CrCl 10–50","3–6 mg/kg/วัน"],[0,10,"CrCl < 10","2–4 mg/kg/วัน"]], hd:"2–4 mg/kg/วัน"},
+   {l:"Other indications", r:[[50.1,G,"CrCl > 50","6 mg/kg/วัน"],[10,50.1,"CrCl 10–50","6 mg/kg ทุก 48 ชม."],[0,10,"CrCl < 10","6 mg/kg ทุก 72 ชม."]], hd:"6 mg/kg ทุก 72 ชม."}]},
+ 
+ {n:"Ertapenem 1 g", th:"เออร์ตาพีเนม", c:"Carbapenem", src:1, g:[
+   {l:"", r:[[50.1,G,"CrCl > 50","1 g ทุก 24 ชม."],[30,50.1,"CrCl 30–50","1 g ทุก 24 ชม."],[10,30,"CrCl ≤ 29 (10–29)","500 mg ทุก 24 ชม."],[0,10,"CrCl < 10","500 mg ทุก 24 ชม."]], hd:"500 mg ทุก 24 ชม. (วันที่ HD ให้หลัง HD)"}]},
+ 
+ {n:"Imipenem 500 mg/Cilastatin 500 mg", th:"อิมิพีเนม/ไซลาสตาติน", c:"Carbapenem", src:1, g:[
+   {l:"(คิดขนาดยาเฉพาะตัว imipenem)", r:[[70,G,"CrCl ≥ 70","1 g ทุก 8 ชม."],[50.1,70,"CrCl 51–69","500 mg ทุก 6 ชม."],[41,50.1,"CrCl 41–50","500 mg ทุก 6 ชม."],[21,41,"CrCl 21–40","500 mg ทุก 8 ชม."],[10,21,"CrCl ≤ 20 (10–20)","500 mg ทุก 12 ชม."],[0,10,"CrCl < 10","500 mg ทุก 12 ชม."]], hd:"250 mg ทุก 12 ชม. + 250 mg หลังฟอกไต"}],
+   note:NOTE_CARBA},
+ 
+ {n:"Meropenem 1 g", th:"เมโรพีเนม", c:"Carbapenem", src:1, g:[
+   {l:"Mild – Moderate", r:[[50.1,G,"CrCl > 50","1 g ทุก 8 ชม."],[26,50.1,"CrCl 26–50","1 g ทุก 12 ชม."],[10,26,"CrCl 10–25","500 mg ทุก 12 ชม."],[0,10,"CrCl < 10","500 mg ทุก 24 ชม."]], hd:"500 mg ทุก 24 ชม. (วันที่ HD ให้หลัง HD)"},
+   {l:"Severe", r:[[50.1,G,"CrCl > 50","2 g ทุก 8 ชม."],[26,50.1,"CrCl 26–50","1 g ทุก 8 ชม."],[10,26,"CrCl 10–25","1 g ทุก 12 ชม."],[0,10,"CrCl < 10","1 g ทุก 24 ชม."]], hd:"1 g ทุก 24 ชม. (วันที่ HD ให้หลัง HD)"}],
+   note:NOTE_CARBA},
+ 
+ {n:"Doripenem 500 mg", th:"โดริพีเนม", c:"Carbapenem", src:1, g:[
+   {l:"Mild – Moderate", r:[[50.1,G,"CrCl > 50","500 mg ทุก 8 ชม."],[30,50.1,"CrCl 30–50","250 mg ทุก 8 ชม."],[10,30,"CrCl 10–29","250 mg ทุก 12 ชม."],[0,10,"CrCl < 10","250 mg ทุก 24 ชม."]], hd:"250 mg ทุก 24 ชม. (วันที่ HD ให้หลัง HD)"},
+   {l:"Severe", r:[[50.1,G,"CrCl > 50","1 g ทุก 8 ชม."],[30,50.1,"CrCl 30–50","500 mg ทุก 8 ชม."],[10,30,"CrCl 10–29","500 mg ทุก 12 ชม."],[0,10,"CrCl < 10","250 mg ทุก 12 ชม."]], hd:"250 mg ทุก 12 ชม. (วันที่ HD ให้หลัง HD)"}],
+   note:NOTE_CARBA},
+ 
+ /* ---- กรณีติดเชื้อดื้อยาหลายขนาน เช่น MDR-A. baumannii และ CRE ---- */
+ {n:"Colistin 150 mg (colistin base)", th:"โคลิสติน", c:"Polymyxin · เชื้อดื้อยาหลายขนาน (MDR-A. baumannii / CRE)", src:1, g:[
+   {l:"Loading dose (LD): 300 mg × 1 ครั้ง", r:[[80.1,G,"CrCl > 80","150 mg ทุก 8–12 ชม."],[50.1,80.1,"CrCl 51–80","150 mg ทุก 12 ชม."],[41,50.1,"CrCl 41–50","150 mg ทุก 12 ชม."],[21,41,"CrCl 21–40","100 mg ทุก 12 ชม."],[10,21,"CrCl ≤ 20 (10–20)","150 mg ทุก 24 ชม."],[0,10,"CrCl < 10","150 mg ทุก 24 ชม."]], hd:"วันที่ไม่ HD: 150 mg ทุก 24 ชม. · วันที่ HD: 200 mg ให้หลัง HD"}]},
+ 
+ {n:"Sulbactam 2 g", th:"ซัลแบคแทม", c:"β-lactamase inhibitor · MDR-A. baumannii (MIC 16 mcg/mL)", src:1, g:[
+   {l:"", r:[[90,G,"CrCl 90–120","3 g ทุก 6 ชม."],[60,90,"CrCl 60–89","3 g ทุก 8 ชม."],[10,60,"CrCl ≤ 59 (10–59)","2 g ทุก 8 ชม."],[0,10,"CrCl < 10","2 g ทุก 8 ชม."]], hd:"No data"}],
+   note:NOTE_SULB},
+ 
+ {n:"Ampicillin 2 g/Sulbactam 1 g", th:"แอมพิซิลลิน/ซัลแบคแทม (ยูนาซิน)", c:"Penicillin + β-lactamase inhibitor", src:1, g:[
+   {l:"Usual doses", r:[[50.1,G,"CrCl > 50","1.5–3 g ทุก 6 ชม."],[30,50.1,"CrCl 30–50","1.5–3 g ทุก 8 ชม."],[15,30,"CrCl 15–29","1.5–3 g ทุก 12 ชม."],[10,15,"CrCl ≤ 14 (10–14)","1.5–3 g ทุก 24 ชม."],[0,10,"CrCl < 10","1.5–3 g ทุก 24 ชม."]], hd:"1.5–3 g ทุก 24 ชม. (วันที่ HD ให้หลัง HD)"},
+   {l:"MDR-A. baumannii (MIC 16 mcg/mL)", r:[[60,G,"CrCl ≥ 60","9 g ทุก 6 ชม."],[50.1,60,"CrCl 50–59","9 g ทุก 8 ชม."],[30,50.1,"CrCl 30–50","6 g ทุก 8 ชม."],[10,30,"CrCl ≤ 29 (10–29)","6 g ทุก 8 ชม."],[0,10,"CrCl < 10","6 g ทุก 8 ชม."]], hd:"6 g ทุก 8 ชม."}],
+   note:"หยดยาใน 4 ชม. (สำหรับ MDR-A. baumannii) · " + NOTE_SULB},
+ 
+ {n:"Fosfomycin 4 g", th:"ฟอสโฟมัยซิน", c:"Fosfomycin IV · เชื้อดื้อยาหลายขนาน (MDR pathogen)", src:1, g:[
+   {l:"MIC 32 mcg/mL (8 g/วัน)", r:[[80,G,"CrCl ≥ 80","4 g ทุก 12 ชม."],[50,80,"CrCl 50–79","3 g ทุก 12 ชม."],[30,50,"CrCl 30–49","2 g ทุก 12 ชม."],[15,30,"CrCl 15–29","3 g ทุก 24 ชม."],[10,15,"CrCl ≤ 14 (10–14)","2 g ทุก 24 ชม."],[0,10,"CrCl < 10","2 g ทุก 24 ชม."]], hd:"2 g แล้ว 2 g หลัง HD (ให้ 3 ครั้งต่อสัปดาห์)"},
+   {l:"MIC 64 mcg/mL (16 g/วัน)", r:[[80,G,"CrCl ≥ 80","4 g ทุก 6 ชม."],[50,80,"CrCl 50–79","4 g ทุก 8 ชม."],[30,50,"CrCl 30–49","4 g ทุก 12 ชม."],[15,30,"CrCl 15–29","3 g ทุก 12 ชม."],[10,15,"CrCl ≤ 14 (10–14)","2 g ทุก 24 ชม."],[0,10,"CrCl < 10","4 g ทุก 24 ชม."]], hd:"4 g แล้ว 4 g หลัง HD (ให้ 3 ครั้งต่อสัปดาห์)"},
+   {l:"MIC > 64 mcg/mL (24 g/วัน)", r:[[80,G,"CrCl ≥ 80","4 g ทุก 4 ชม."],[50,80,"CrCl 50–79","4 g ทุก 6 ชม."],[30,50,"CrCl 30–49","4 g ทุก 8 ชม."],[15,30,"CrCl 15–29","4 g ทุก 12 ชม."],[10,15,"CrCl ≤ 14 (10–14)","4 g ทุก 24 ชม."],[0,10,"CrCl < 10","4 g ทุก 24 ชม."]], hd:"4 g แล้ว 4 g หลัง HD (ให้ 3 ครั้งต่อสัปดาห์)"}],
+   note:"หยดยาใน 4 ชม. (สำหรับ MDR pathogen)"},
+ 
+ /* ---------- ยาอื่นๆ (เพิ่มเติม) — อ้างอิง: เอกสาร “การปรับขนาดยาต้านจุลชีพตามการทำงานของไต” กลุ่มงานเภสัชกรรม รพ.อ่างทอง 1 มี.ค. 2565
+   (ยาที่ซ้ำกับตาราง ม.ธรรมศาสตร์ด้านบนใช้ข้อมูลของตาราง ม.ธรรมศาสตร์) ---------- */
+ {n:"Acyclovir (IV)", th:"อะไซโคลเวียร์ (ฉีด)", c:"Antiviral", g:[
+   {l:"Prophylaxis – BMT", r:[[50.1,G,"CrCl > 50","250 mg/m² ทุก 12 ชม."],[25,50.1,"CrCl 25–50","125 mg/m² ทุก 12 ชม."],[10,25,"CrCl 10–24","125 mg/m² ทุก 24 ชม."],[0,10,"CrCl < 10","62.5 mg/m² ทุก 24 ชม."]], hd:"62.5 mg/m² ทุก 24 ชม."},
+   {l:"Prophylaxis – Hematology/Oncology", r:[[50.1,G,"CrCl > 50","2 mg/kg ทุก 12 ชม."],[25,50.1,"CrCl 25–50","2 mg/kg ทุก 12 ชม."],[10,25,"CrCl 10–24","2 mg/kg ทุก 24 ชม."],[0,10,"CrCl < 10","1 mg/kg ทุก 24 ชม."]], hd:"1 mg/kg ทุก 24 ชม."},
+   {l:"Treatment – General (เช่น mucocutaneous HSV)", r:[[50.1,G,"CrCl > 50","5 mg/kg ทุก 8 ชม."],[25,50.1,"CrCl 25–50","5 mg/kg ทุก 12 ชม."],[10,25,"CrCl 10–24","5 mg/kg ทุก 24 ชม."],[0,10,"CrCl < 10","2.5 mg/kg ทุก 24 ชม."]], hd:"2.5 mg/kg ทุก 24 ชม."},
+   {l:"Treatment – Severe (เช่น CNS/ocular/disseminated HSV, Zoster)", r:[[50.1,G,"CrCl > 50","10 mg/kg ทุก 8 ชม."],[25,50.1,"CrCl 25–50","10 mg/kg ทุก 12 ชม."],[10,25,"CrCl 10–24","10 mg/kg ทุก 24 ชม."],[0,10,"CrCl < 10","5 mg/kg ทุก 24 ชม."]], hd:"5 mg/kg ทุก 24 ชม."}],
+   note:"ผู้ป่วยอ้วนใช้ adjusted BW · CRRT: BMT 125 mg/m² ทุก 12 ชม.; Heme/Onc 2 mg/kg ทุก 12 ชม.; General 5–10 mg/kg ทุก 12 ชม.; Severe 10 mg/kg ทุก 12 ชม."},
+ 
+ {n:"Acyclovir (PO)", th:"อะไซโคลเวียร์ (รับประทาน)", c:"Antiviral", g:[
+   {l:"Prophylaxis – BMT", r:[[50.1,G,"CrCl > 50","800 mg วันละ 2 ครั้ง"],[25,50.1,"CrCl 25–50","400 mg วันละ 2 ครั้ง"],[10,25,"CrCl 10–24","200 mg วันละ 2 ครั้ง"],[0,10,"CrCl < 10","200 mg วันละครั้ง"]], hd:"200 mg วันละครั้ง"},
+   {l:"Prophylaxis – Hematology/Oncology", r:[[50.1,G,"CrCl > 50","400 mg วันละ 2 ครั้ง"],[25,50.1,"CrCl 25–50","400 mg วันละ 2 ครั้ง"],[10,25,"CrCl 10–24","200 mg วันละ 2 ครั้ง"],[0,10,"CrCl < 10","200 mg วันละครั้ง"]], hd:"200 mg วันละครั้ง"},
+   {l:"Treatment – General (เช่น mucocutaneous HSV)", r:[[25,G,"CrCl > 25","400 mg ทุก 8 ชม. (ทางเลือก: 200 mg วันละ 5 ครั้ง)"],[10,25,"CrCl 10–24","200 mg ทุก 8 ชม."],[0,10,"CrCl < 10","200 mg ทุก 12 ชม."]], hd:"200 mg ทุก 12 ชม."},
+   {l:"Treatment – Severe (เช่น CNS/ocular/disseminated HSV, Zoster)", r:[[25,G,"CrCl > 25","800 mg ทุก 4 ชม. (หรือวันละ 5 ครั้ง)"],[10,25,"CrCl 10–24","800 mg ทุก 8 ชม."],[0,10,"CrCl < 10","800 mg ทุก 12 ชม."]], hd:"800 mg ทุก 12 ชม."}],
+   note:"CRRT/CAPD: ไม่มีข้อมูล"},
+ 
+ {n:"Amikacin", th:"อะมิคาซิน", c:"Aminoglycoside", g:[
+   {l:"Multiple daily dosing", r:[[90.1,G,"Normal renal function (CrCl > 90)","7.5 mg/kg ทุก 12 ชม. หรือ 15 mg/kg วันละครั้ง"],[50.1,90.1,"CrCl > 50–90","7.5 mg/kg ทุก 12 ชม."],[10,50.1,"CrCl 10–50","7.5 mg/kg ทุก 24 ชม."],[0,10,"CrCl < 10","ตารางไม่ได้ระบุช่วงนี้แยกต่างหาก — ดูแถวฟอกไต (IHD) หากฟอกไต / ปรึกษาเภสัชกร"]], hd:"นอกจาก 7.5 mg/kg ทุก 48 ชม. ให้เพิ่มอีก 50% ของขนาดปกติ (3.75 mg/kg) หลังฟอกไต (AD); ถ้า dose ทุก 48 ชม. ตรงวันฟอกไต ให้ 7.5 mg/kg ก่อนฟอกไต และ 3.75 mg/kg หลังฟอกไต"},
+   {l:"Once-daily dosing", r:[[80.1,G,"CrCl > 80","15 mg/kg ทุก 24 ชม."],[60,80.1,"CrCl 60–80","12 mg/kg ทุก 24 ชม."],[40,60,"CrCl 40–60","7.5 mg/kg ทุก 24 ชม."],[30,40,"CrCl 30–40","4 mg/kg ทุก 24 ชม."],[20,30,"CrCl 20–30","7.5 mg/kg ทุก 48 ชม."],[10,20,"CrCl 10–20","4 mg/kg ทุก 48 ชม."],[0,10,"CrCl 0–10","3 mg/kg ทุก 72 ชม. และหลังฟอกไต (AD)"]]}],
+   note:"ผู้ป่วยอ้วนใช้ adjusted BW · CRRT: 7.5 mg/kg ทุก 24 ชม.; CAPD: 2 mg/kg ใส่ใน 1 exchange ต่อวัน (dwell อย่างน้อย 6 ชม.)"},
+ 
+ {n:"Amoxicillin (PO)", th:"อะม็อกซีซิลลิน (รับประทาน)", c:"Penicillin", g:[
+   {l:"", r:[[50.1,G,"CrCl > 50","ขนาดปกติ: 500–1,000 mg ทุก 8–12 ชม. หรือ 875 mg ทุก 12 ชม. | CAP: 1,000 mg ทุก 8 ชม. | H. pylori: 1,000 mg ทุก 12 ชม. | Procedural ppx: 2,000 mg × 1"],[30,50.1,"CrCl 30–50","ไม่ต้องปรับขนาดยา (CrCl > 30)"],[10,30,"CrCl 10–29","250–500 mg ทุก 12 ชม."],[0,10,"CrCl < 10","250–500 mg ทุก 24 ชม."]], hd:"250–500 mg ทุก 24 ชม.; ให้ dose เพิ่มเมื่อสิ้นสุดการฟอกไต"}],
+   note:"CRRT: 250–500 mg ทุก 8–12 ชม.; CAPD: 250–500 mg ทุก 12 ชม."},
+ 
+ {n:"Amoxicillin/Clavulanate (PO)", th:"อะม็อกซี/คลาวูลาเนต รับประทาน (ออคเมนติน)", c:"Penicillin + β-lactamase inhibitor", g:[
+   {l:"", r:[[50.1,G,"CrCl > 50","500/125 mg ทุก 8 ชม. หรือ 875/125 mg ทุก 12 ชม."],[30,50.1,"CrCl 30–50","ตารางระบุปรับขนาดเฉพาะ CrCl 10–30 (ช่วงนี้ใช้ขนาดปกติ)"],[10,30,"CrCl 10–29","250–500 mg (ส่วน amoxicillin) ทุก 12 ชม."],[0,10,"CrCl < 10","250–500 mg (ส่วน amoxicillin) ทุก 24 ชม."]], hd:"250–500 mg (ส่วน amoxicillin) ทุก 24 ชม.; ให้ dose เพิ่มเมื่อสิ้นสุดการฟอกไต"}],
+   note:"CRRT/CAPD: ไม่มีข้อมูล"},
+ 
+ {n:"Amoxicillin/Clavulanate (IV)", th:"อะม็อกซี/คลาวูลาเนต ฉีด", c:"Penicillin + β-lactamase inhibitor", g:[
+   {l:"", r:[[30,G,"CrCl > 30","1,000/200 mg ทุก 8 ชม."],[10,30,"CrCl 10–29","1,000/200 mg เป็น initial dose แล้ว 500/100 mg ทุก 12 ชม."],[0,10,"CrCl < 10","1,000/200 mg เป็น initial dose แล้ว 500/100 mg ทุก 24 ชม."]], hd:"1,000/200 mg เป็น initial dose แล้ว 500/100 mg ทุก 24 ชม. (ให้ dose เพิ่มหลังฟอกไตในวันที่ฟอก)"}],
+   note:"CRRT/CAPD: ไม่มีข้อมูล"},
+ 
+ std("Amphotericin B deoxycholate", "แอมโฟเทอริซิน บี ดีออกซีโคเลต", "Antifungal", "0.3–1 mg/kg IV ทุก 24 ชม.", NC, NC, NC, "CRRT/CAPD: ไม่ต้องปรับขนาดยา"),
+ 
+ {n:"Ampicillin (IV)", th:"แอมพิซิลลิน (ฉีด)", c:"Penicillin", g:[
+   {l:"", r:[[50.1,G,"CrCl > 50","1–2 g ทุก 4–6 ชม."],[30,50.1,"CrCl 30–50","1–2 g ทุก 6–8 ชม."],[10,30,"CrCl 10–29","1–2 g ทุก 8–12 ชม."],[0,10,"CrCl < 10","1–2 g ทุก 12 ชม."]], hd:"1–2 g ทุก 12 ชม. (ให้ dose หนึ่งของวันฟอกไตหลังฟอกไต)"}],
+   note:"CRRT: 1–2 g ทุก 8–12 ชม.; CAPD: 500 mg – 1 g ทุก 12 ชม."},
+ 
+ std("Atazanavir (PO)", "อะทาซานาเวียร์", "Antiretroviral", "ATV + RTV 300/100 mg วันละครั้ง", NC, NC, NC, "CRRT/CAPD: ไม่ต้องปรับขนาดยา"),
+ std("Azithromycin (IV/PO)", "อะซิโทรมัยซิน", "Macrolide", "500 mg ทุก 24 ชม.", NC, NC, NC, "CRRT/CAPD: ไม่ต้องปรับขนาดยา"),
+ 
+ std("Benzathine + Benzylpenicillin (Penicillin G Benzathine)", "เพนิซิลลิน จี เบนซาทีน", "Penicillin", "1.2–2.4 ล้านยูนิต IM ทุก 1 สัปดาห์", "ลดขนาดยา 25%", "ลดขนาดยา 10%", "ถูกกำจัดด้วยการฟอกไต; ให้ยาหลังฟอกไต", "CAPD: 20–50% ทุก 6 ชม. (ตามต้นฉบับ)"),
+ 
+ std("Benzylpenicillin (Penicillin G Sodium)", "เบนซิลเพนิซิลลิน (เพนิซิลลิน จี โซเดียม)", "Penicillin", "0.5–4 ล้านยูนิต ทุก 4 ชม.", "0.5–4 ล้านยูนิต ทุก 8 ชม.", "0.5–4 ล้านยูนิต ทุก 12 ชม.", "0.5–4 ล้านยูนิต ทุก 12 ชม. (ให้ dose หนึ่งของวันฟอกไตหลังฟอกไต)", "CRRT: 1–4 ล้านยูนิต ทุก 6–8 ชม.; CAPD: 0.5–4 ล้านยูนิต ทุก 12 ชม."),
+ 
+ std("Cefaclor", "เซฟาคลอร์", "Cephalosporin gen 2", "500 mg ทุก 8 ชม.", "500 mg ทุก 8 ชม.", "500 mg ทุก 12 ชม.", "500 mg ทุก 12 ชม. (ให้ dose หนึ่งของวันฟอกไตหลังฟอกไต)", "CRRT: ไม่มีข้อมูล; CAPD: 500 mg ทุก 12 ชม."),
+ 
+ {n:"Cefazolin", th:"เซฟาโซลิน", c:"Cephalosporin gen 1", g:[
+   {l:"Mild/moderate", r:[[50.1,G,"CrCl > 50","1 g ทุก 8 ชม."],[10,50.1,"CrCl 10–50","1 g ทุก 12 ชม."],[0,10,"CrCl < 10","1 g ทุก 24 ชม."]], hd:"1–2 g ทุก 24 ชม. (+ เพิ่ม 0.5–1 g หลังฟอกไต)"},
+   {l:"Severe", r:[[50.1,G,"CrCl > 50","2 g ทุก 8 ชม."],[10,50.1,"CrCl 10–50","2 g ทุก 12 ชม."],[0,10,"CrCl < 10","2 g ทุก 24 ชม."]], hd:"1–2 g ทุก 24 ชม. (+ เพิ่ม 0.5–1 g หลังฟอกไต)"}],
+   note:"สูงสุด 12 g/วัน · CRRT: 1–2 g ทุก 12 ชม.; CAPD: 0.5 g ทุก 12 ชม."},
+ 
+ {n:"Cefdinir", th:"เซฟดินีร์", c:"Cephalosporin gen 3", g:[
+   {l:"", r:[[50.1,G,"CrCl > 50","300 mg ทุก 12 ชม."],[30,50.1,"CrCl 30–50","ตารางระบุปรับขนาดเฉพาะ CrCl < 30 (ช่วงนี้ใช้ 300 mg ทุก 12 ชม.)"],[10,30,"CrCl 10–29","300 mg ทุก 24 ชม."],[0,10,"CrCl < 10","300 mg ทุก 24 ชม."]], hd:"300 mg ทุก 48 ชม.; ให้ dose หลังฟอกไตในวันที่ฟอก"}],
+   note:"CRRT/CAPD: ไม่มีข้อมูล"},
+ 
+ std("Cefixime", "เซฟิซิม", "Cephalosporin gen 3", "200 mg ทุก 12 ชม.", "300 mg ทุก 24 ชม.", "200 mg ทุก 24 ชม.", "200 mg ทุก 24 ชม. ให้หลังฟอกไตในวันที่ฟอก", "CRRT: ไม่มีข้อมูล; CAPD: 200 mg ทุก 24 ชม."),
+ 
+ std("Cefotaxime", "เซโฟแทกซิม", "Cephalosporin gen 3", "1–2 g IV ทุก 8 ชม.", "1–2 g IV ทุก 12 ชม.", "1–2 g IV ทุก 24 ชม.", "1–2 g IV ทุก 24 ชม. ให้หลังฟอกไตในวันที่ฟอก", "CRRT: 2 g ทุก 12–24 ชม.; CAPD: 0.5–1 g IV ทุก 24 ชม."),
+ 
+ {n:"Cefoxitin", th:"เซโฟซิติน", c:"Cephamycin", g:[
+   {l:"", r:[[50.1,G,"CrCl > 50","1–2 g IV ทุก 6–8 ชม."],[30,50.1,"CrCl 30–50","ตารางระบุปรับขนาดเฉพาะ CrCl 10–30 (ช่วงนี้ใช้ขนาดปกติ)"],[10,30,"CrCl 10–29","1–2 g IV ทุก 12 ชม."],[0,10,"CrCl < 10","1–2 g IV ทุก 24 ชม."]], hd:"1–2 g IV ทุก 24 ชม. ให้หลังฟอกไตในวันที่ฟอก"}],
+   note:"CRRT: 2 g ทุก 8–12 ชม.; CAPD: 1 g IV ทุก 24 ชม."},
+ 
+ {n:"Ceftriaxone", th:"เซฟไตรอะโซน", c:"Cephalosporin gen 3", g:[
+   {l:"", r:[[10,G,"CrCl ≥ 10","1–2 g ทุก 24 ชม. | Endovascular/osteomyelitis/PJI: 2 g ทุก 24 ชม. | Meningitis, E. faecalis endocarditis: 2 g ทุก 12 ชม."],[0,10,"CrCl < 10","ไม่ต้องปรับขนาดยา"]], hd:"ไม่ต้องปรับขนาดยา"}],
+   note:"CRRT/CAPD: ไม่ต้องปรับขนาดยา"},
+ 
+ {n:"Cephalexin (PO)", th:"เซฟาเลกซิน (รับประทาน)", c:"Cephalosporin gen 1", g:[
+   {l:"", r:[[10,G,"CrCl ≥ 10","250–500 mg ทุก 6 ชม. | Uncomplicated cystitis: 500 mg ทุก 12 ชม. | Cellulitis/SSTI: 500 mg ทุก 6 ชม."],[0,10,"CrCl < 10","250–500 mg ทุก 8–12 ชม."]], hd:"250–500 mg ทุก 24–48 ชม."}],
+   note:"CRRT/CAPD: 250–500 mg ทุก 12–24 ชม. ให้วันละครั้ง แต่ให้หลังฟอกไตในวันที่ฟอก"},
+ 
+ {n:"Ciprofloxacin (IV/PO)", th:"ซิโปรฟลอกซาซิน (ฉีด/รับประทาน)", c:"Fluoroquinolone", g:[
+   {l:"General infections", r:[[50.1,G,"CrCl > 50","400 mg IV ทุก 12 ชม. | 500 mg PO ทุก 12 ชม."],[30,50.1,"CrCl 30–50","400 mg IV ทุก 12 ชม. | 500 mg PO ทุก 12 ชม."],[0,30,"CrCl < 30","400 mg IV ทุก 24 ชม. | 500 mg PO ทุก 24 ชม."]], hd:"200–400 mg IV ทุก 24 ชม. | 250–500 mg PO ทุก 24 ชม. (ให้วันละครั้ง แต่ให้หลังฟอกไตในวันที่ฟอก)"},
+   {l:"Pseudomonas, severe", r:[[50.1,G,"CrCl > 50","400 mg IV ทุก 8 ชม. | 750 mg PO ทุก 12 ชม."],[30,50.1,"CrCl 30–50","400 mg IV ทุก 8–12 ชม. | 500 mg PO ทุก 12 ชม."],[0,30,"CrCl < 30","400 mg IV ทุก 24 ชม. | 500 mg PO ทุก 24 ชม."]], hd:"200–400 mg IV ทุก 24 ชม. | 250–500 mg PO ทุก 24 ชม. (ให้วันละครั้ง แต่ให้หลังฟอกไตในวันที่ฟอก)"}],
+   note:"CRRT: 200–400 mg IV ทุก 12 ชม. / 250–500 mg PO ทุก 12 ชม.; CAPD: 200–400 mg IV ทุก 24 ชม. / 250–500 mg PO ทุก 24 ชม.; ติดเชื้อรุนแรงจาก A. baumannii หรือ P. aeruginosa: 400 mg IV ทุก 8–12 ชม."},
+ 
+ std("Clarithromycin", "คลาริโทรมัยซิน", "Macrolide", "500 mg PO ทุก 12 ชม.", "500 mg PO ทุก 12–24 ชม.", "500 mg PO ทุก 24 ชม.", "500 mg PO ทุก 24 ชม. (ให้ dose หลังฟอกไตในวันที่ฟอก)", "CRRT: 500 mg ทุก 12–24 ชม.; CAPD: 500 mg ทุก 24 ชม."),
+ std("Clindamycin", "คลินดามัยซิน", "Lincosamide", "600–900 mg IV ทุก 8 ชม. | 150–450 mg PO ทุก 6 ชม.", NC, NC, NC, "CRRT/CAPD: ไม่ต้องปรับขนาดยา"),
+ std("Cloxacillin", "คล็อกซาซิลลิน", "Penicillin (anti-staphylococcal)", "500 mg – 2 g ทุก 6 ชม.", NC, NC, NC, "CRRT/CAPD: ไม่ต้องปรับขนาดยา"),
+ 
+ std("Cycloserine", "ไซโคลเซอรีน", "Anti-TB", "เริ่ม 250 mg รับประทานทุก 12 ชม. นาน 2 สัปดาห์ แล้ว 500–1,000 mg/วัน แบ่งให้ (สูงสุด 1 g/วัน)", "ให้ทุก 24–36 ชม.", "ให้ทุก 36–48 ชม.", "250 mg วันละครั้ง หรือ 500 mg สัปดาห์ละ 3 ครั้ง ให้หลังฟอกไตในวันที่ฟอก", "CRRT/CAPD: ไม่มีข้อมูล"),
+ 
+ std("Dapsone (PO)", "แดปโซน", "Anti-infective", "50–100 mg PO ทุก 24 ชม.", "ไม่มีคำแนะนำเฉพาะ", "ไม่มีคำแนะนำเฉพาะ", "Pneumocystis prophylaxis: พิจารณา 50 mg วันละ 2 ครั้ง และให้อย่างน้อย 1 dose หลังฟอกไต; กรณีอื่นไม่มีคำแนะนำเฉพาะ", "CRRT/CAPD: ไม่มีข้อมูล"),
+ std("Dicloxacillin (IV/PO)", "ไดคล็อกซาซิลลิน", "Penicillin (anti-staphylococcal)", "250–500 mg ทุก 6 ชม.", NC, NC, NC, "CRRT/CAPD: ไม่ต้องปรับขนาดยา"),
+ std("Doxycycline (IV/PO)", "ดอกซีไซคลิน", "Tetracycline", "(Load 200 mg × 1 ในการติดเชื้อรุนแรง) 100 mg ทุก 12 ชม.", NC, NC, NC, "CRRT/CAPD: ไม่ต้องปรับขนาดยา"),
+ std("Efavirenz (PO)", "เอฟาไวเรนซ์", "Antiretroviral", "ผู้ใหญ่ ≥ 40 กก.: 600 mg ทุก 24 ชม.", NC, NC, NC, "CRRT/CAPD: ไม่ต้องปรับขนาดยา"),
+ 
+ {n:"Erythromycin (PO)", th:"อีริโทรมัยซิน", c:"Macrolide", g:[
+   {l:"", r:[[10,G,"CrCl ≥ 10","250–500 mg ทุก 6–12 ชม."],[0,10,"CrCl < 10","ไม่จำเป็นต้องปรับขนาดยา"]], hd:"ไม่จำเป็นต้องปรับขนาดยา"}],
+   note:"CRRT/CAPD: ไม่จำเป็นต้องปรับขนาดยา"},
+ 
+ {n:"Ethambutol (PO)", th:"เอแทมบูทอล", c:"Anti-TB", g:[
+   {l:"", r:[[50.1,G,"CrCl > 50","15–25 mg/kg/วัน (สูงสุด 1,600 mg/วัน) — Lean BW 40–55 กก.: 800 mg | 56–75 กก.: 1,200 mg | 76–90 กก.: 1,600 mg"],[30,50.1,"CrCl 30–50","15–25 mg/kg ทุก 24–36 ชม."],[10,30,"CrCl 10–29","15–25 mg/kg ทุก 36–48 ชม."],[0,10,"CrCl < 10","15 mg/kg ทุก 48 ชม."]], hd:"15 mg/kg ทุก 48 ชม. ให้หลังฟอกไต (AD)"}],
+   note:"ผู้ป่วยอ้วนใช้ lean BW · CRRT: 15–25 mg/kg ทุก 24 ชม.; CAPD: 15 mg/kg ทุก 48 ชม."},
+ 
+ {n:"Fluconazole", th:"ฟลูโคนาโซล", c:"Antifungal", g:[
+   {l:"", r:[[50.1,G,"CrCl > 50","ตามข้อบ่งใช้ — Load 800 mg ในการติดเชื้อรุนแรง; 200–400 mg ทุก 24 ชม.; C. glabrata: 800 mg ทุก 24 ชม.; Severe/CNS/endovascular: สูงสุด 800 mg ทุก 24 ชม."],[10,50.1,"CrCl 10–50","50% ของขนาดปกติ ทุก 24 ชม."],[0,10,"CrCl < 10","50% ของขนาดปกติ ทุก 24 ชม."]], hd:"50% ของขนาดปกติในวันที่ไม่ฟอกไต; ให้ขนาดเต็มหลังฟอกไตในวันที่ฟอก"}],
+   note:"CRRT: 200–400 mg ทุก 24 ชม.; CAPD: 50–200 mg ทุก 24 ชม."},
+ 
+ {n:"Favipiravir", th:"ฟาวิพิราเวียร์", c:"Antiviral", g:[
+   {l:"", r:[[50.1,G,"CrCl > 50","BW ≤ 90 กก.: วันที่ 1 = 1,800 mg วันละ 2 ครั้ง, วันที่ 2–5 = 800 mg วันละ 2 ครั้ง | BW > 90 กก.: วันที่ 1 = 2,400 mg วันละ 2 ครั้ง, วันที่ 2–5 = 1,000 mg วันละ 2 ครั้ง"],[10,50.1,"CrCl 10–50","ไม่มีข้อมูล"],[0,10,"CrCl < 10","ไม่มีข้อมูล"]], hd:"ไม่มีข้อมูล"}],
+   note:"CRRT/CAPD: ไม่มีข้อมูล"},
+ 
+ {n:"Gentamicin", th:"เจนตาไมซิน", c:"Aminoglycoside", g:[
+   {l:"Conventional (multiple daily) dosing", r:[[50.1,G,"CrCl > 50","1.7–2.0 mg/kg ทุก 8 ชม."],[10,50.1,"CrCl 10–50","1.7–2.0 mg/kg ทุก 12–24 ชม."],[0,10,"CrCl < 10","1.7–2.0 mg/kg ทุก 48 ชม."]], hd:"นอกจาก 1.7–2.0 mg/kg ทุก 48 ชม. ให้เพิ่มอีก 50% ของขนาดปกติ (0.85–1.0 mg/kg) หลังฟอกไต (AD); ถ้า dose ทุก 48 ชม. ตรงวันฟอกไต ให้ 1.7–2.0 mg/kg ก่อนฟอกไต แล้วให้ dose เพิ่มหลังฟอกไต"},
+   {l:"Once-daily dosing", r:[[80.1,G,"CrCl > 80","5.1 mg/kg ทุก 24 ชม."],[60,80.1,"CrCl 60–80","4 mg/kg ทุก 24 ชม."],[40,60,"CrCl 40–60","3.5 mg/kg ทุก 24 ชม."],[30,40,"CrCl 30–40","2.5 mg/kg ทุก 24 ชม."],[20,30,"CrCl 20–30","4 mg/kg ทุก 48 ชม."],[10,20,"CrCl 10–20","3 mg/kg ทุก 48 ชม."],[0,10,"CrCl 0–10","2 mg/kg ทุก 72 ชม. และหลังฟอกไต (AD)"]]}],
+   note:"ผู้ป่วยอ้วนใช้ adjusted BW · CRRT: 1.7–2.0 mg/kg ทุก 24 ชม.; CAPD: 0.6 mg/kg ใส่ใน 1 exchange ต่อวัน"},
+ 
+ std("Isoniazid (PO)", "ไอโซไนอาซิด", "Anti-TB", "300 mg ทุก 24 ชม. (5 mg/kg/วัน)", NC, NC, NC, "CRRT/CAPD: ไม่ต้องปรับขนาดยา"),
+ std("Itraconazole (PO)", "อิทราโคนาโซล", "Antifungal", "100–200 mg ทุก 12 ชม. (สูงสุด 600 mg/วัน)", "100–200 mg ทุก 12 ชม.", "50–100 mg ทุก 12 ชม.", "100 mg ทุก 12–24 ชม.", "CRRT: 100–200 mg ทุก 12 ชม.; CAPD: 100 mg ทุก 12–24 ชม."),
+ std("Kanamycin (IV/IM)", "คานามัยซิน", "Aminoglycoside", "7.5 mg/kg IV/IM ทุก 12 ชม. หรือ 15 mg/kg IV/IM วันละครั้ง", "7.5 mg/kg IV/IM ทุก 24 ชม.", "7.5 mg/kg IV/IM ทุก 48 ชม.", "50% ของขนาดปกติ หลังฟอกไต", "CRRT: 7.5 mg/kg ทุก 24 ชม.; CAPD: สูญเสีย 15–20 mg ต่อลิตรของ dialysate/วัน"),
+ std("Lamivudine (PO)", "ลามิวูดีน", "Antiretroviral", "150 mg ทุก 12 ชม. หรือ 300 mg ทุก 24 ชม.", "50–150 mg ทุก 24 ชม.", "25–50 mg ทุก 24 ชม.", "25–50 mg ทุก 24 ชม. (ให้ dose หลังฟอกไตในวันที่ฟอก)", "CRRT: 100 mg ในวันแรก แล้ว 50 mg/วัน; CAPD: 25–50 mg ทุก 24 ชม."),
+ std("Lopinavir/ritonavir (PO)", "โลพินาเวียร์/ริโทนาเวียร์", "Antiretroviral", "400/100 mg PO ทุก 12 ชม. หรือ 800/200 mg PO ทุก 24 ชม.", "ไม่มีคำแนะนำที่ชัดเจน แต่น่าจะไม่จำเป็นต้องปรับขนาดยา", "ไม่มีคำแนะนำที่ชัดเจน แต่น่าจะไม่จำเป็นต้องปรับขนาดยา", "ไม่มีคำแนะนำที่ชัดเจน แต่น่าจะไม่จำเป็นต้องปรับขนาดยา", "CRRT/CAPD: ไม่มีคำแนะนำที่ชัดเจน แต่น่าจะไม่จำเป็นต้องปรับขนาดยา"),
+ 
+ {n:"Metronidazole (IV/PO)", th:"เมโทรนิดาโซล", c:"Nitroimidazole", g:[
+   {l:"", r:[[10,G,"CrCl ≥ 10","500 mg ทุก 6–8 ชม. หรือ 7.5 mg/kg ทุก 6 ชม."],[0,10,"CrCl < 10","7.5 mg/kg ทุก 12 ชม."]], hd:"7.5 mg/kg ทุก 12 ชม. (ให้ dose หนึ่งของวันฟอกไตหลังฟอกไต)"}],
+   note:"CRRT: 7.5 mg/kg ทุก 6 ชม.; CAPD: 7.5 mg/kg ทุก 12 ชม."},
+ 
+ std("Moxifloxacin (IV/PO)", "ม็อกซิฟลอกซาซิน", "Fluoroquinolone", "400 mg IV/PO ทุก 24 ชม.", NC, NC, NC, "CRRT/CAPD: ไม่ต้องปรับขนาดยา"),
+ 
+ {n:"Nevirapine (PO)", th:"เนวิราพีน", c:"Antiretroviral", g:[
+   {l:"", r:[[50.1,G,"CrCl > 50","200 mg PO ทุก 24 ชม. นาน 14 วัน แล้วเพิ่มเป็น 200 mg PO ทุก 12 ชม. (immediate release) หรือ 400 mg PO ทุก 24 ชม. (extended-release)"],[20,50.1,"CrCl 20–50","ไม่ต้องปรับขนาดยา (CrCl ≥ 20)"],[0,20,"CrCl < 20","ไม่มีคำแนะนำ"]], hd:"ไม่มีคำแนะนำ (CrCl < 20)"}],
+   note:"CRRT/CAPD: ไม่มีคำแนะนำ (CrCl < 20)"},
+ 
+ {n:"Norfloxacin", th:"นอร์ฟลอกซาซิน", c:"Fluoroquinolone", g:[
+   {l:"", r:[[50.1,G,"CrCl > 50","400 mg ทุก 12 ชม."],[30,50.1,"CrCl 30–50","ตารางระบุปรับขนาดเฉพาะ CrCl < 30 (ช่วงนี้ใช้ 400 mg ทุก 12 ชม.)"],[0,30,"CrCl < 30","400 mg ทุก 24 ชม."]], hd:"400 mg ทุก 24 ชม."}],
+   note:"CRRT: ไม่เหมาะสม (not applicable); CAPD: 400 mg ทุก 24 ชม."},
+ 
+ std("Ofloxacin", "โอฟลอกซาซิน", "Fluoroquinolone", "200–400 mg ทุก 12 ชม.", "200–400 mg ทุก 24 ชม.", "200 mg ทุก 24 ชม.", "200 mg ทุก 24 ชม. (ให้ dose ของวันฟอกไตหลังฟอกไต)", "CRRT: 200–400 mg ทุก 24 ชม.; CAPD: 200 mg ทุก 24 ชม."),
+ 
+ {n:"Oseltamivir (PO)", th:"โอเซลทามิเวียร์", c:"Antiviral", g:[
+   {l:"Prophylaxis", r:[[60,G,"CrCl ≥ 60","75 mg ทุก 24 ชม."],[30,60,"CrCl 30–60","30 mg ทุก 24 ชม."],[10,30,"CrCl 10–30","30 mg ทุก 48 ชม."],[0,10,"CrCl < 10","ตารางไม่ได้ระบุช่วงนี้ — ดูแถวฟอกไต (IHD) หากฟอกไต / ปรึกษาเภสัชกร"]], hd:"30 mg × 1 แล้ว 30 mg หลังฟอกไตทุก ๆ 2 รอบ"},
+   {l:"Treatment", r:[[60,G,"CrCl ≥ 60","75 mg ทุก 12 ชม."],[30,60,"CrCl 30–60","30 mg ทุก 12 ชม."],[10,30,"CrCl 10–30","30 mg ทุก 24 ชม."],[0,10,"CrCl < 10","ตารางไม่ได้ระบุช่วงนี้ — ดูแถวฟอกไต (IHD) หากฟอกไต / ปรึกษาเภสัชกร"]], hd:"30 mg × 1 แล้ว 30 mg หลังฟอกไตเพียงครั้งเดียว"}],
+   note:"CRRT: ไม่มีข้อมูล; CAPD: Prophylaxis 30 mg ทันที แล้ว 30 mg ทุกสัปดาห์ | Treatment 30 mg ครั้งเดียวทันที"},
+ 
+ std("Penicillin V (PO)", "เพนิซิลลิน วี", "Penicillin", "250–500 mg ทุก 6–8 ชม.", NC, NC, "ไม่ต้องปรับขนาดยา; ให้ dose หลังฟอกไตในวันที่ฟอก", "CRRT/CAPD: ไม่ต้องปรับขนาดยา; ให้ dose หลังฟอกไตในวันที่ฟอก"),
+ 
+ {n:"Pyrazinamide (PO)", th:"ไพราซินาไมด์", c:"Anti-TB", g:[
+   {l:"", r:[[50.1,G,"CrCl > 50","ขนาดปกติ 25 mg/kg ทุก 24 ชม. (สูงสุด 2,000 mg/วัน) — Lean BW 40–55 กก.: 1,000 mg | 56–75 กก.: 1,500 mg | 76–90 กก.: 2,000 mg"],[30,50.1,"CrCl 30–50","ตารางระบุปรับขนาดเฉพาะ CrCl < 30 (ช่วงนี้ใช้ขนาดปกติ)"],[0,30,"CrCl < 30","25 mg/kg สัปดาห์ละ 3 ครั้ง"]], hd:"25 mg/kg สัปดาห์ละ 3 ครั้ง ให้หลังฟอกไตเท่านั้น"}],
+   note:"ผู้ป่วยอ้วนใช้ lean BW · CRRT: 25 mg/kg ทุก 24 ชม. (สูงสุด 2,500 mg/วัน); CAPD: 25 mg/kg ทุก 24 ชม."},
+ 
+ {n:"Rifampin (PO)", th:"ไรแฟมพิน", c:"Anti-TB / Rifamycin", g:[
+   {l:"", r:[[50.1,G,"CrCl > 50","TB: 10 mg/kg ทุก 24 ชม. (สูงสุด 600 mg/วัน) | Endocarditis: 300 mg ทุก 8 ชม. | PJI: 300–450 mg ทุก 12 ชม. | Vertebral osteomyelitis: 600 mg ทุก 24 ชม."],[10,50.1,"CrCl 10–50","ไม่ต้องปรับขนาดยา"],[0,10,"CrCl < 10","ไม่ต้องปรับขนาดยา"]], hd:"ไม่ต้องปรับขนาดยา"}],
+   note:"CRRT/CAPD: ไม่ต้องปรับขนาดยา"},
+ 
+ std("Remdesivir", "เรมเดซิเวียร์", "Antiviral", "200 mg IV loading dose แล้ว 100 mg IV วันละครั้ง", "ไม่แนะนำ", "ไม่แนะนำ", "ไม่มีข้อมูล", "CRRT/CAPD: ไม่มีข้อมูล"),
+ 
+ {n:"Streptomycin", th:"สเตรปโตมัยซิน", c:"Aminoglycoside", g:[
+   {l:"", r:[[50.1,G,"CrCl > 50","Moderate–Severe infection: 1–2 g/วัน IM แบ่งให้ทุก 6–12 ชม. (สูงสุด 2 g/วัน) | M. tuberculosis: 15 mg/kg IM ทุก 24 ชม. (สูงสุด 1 g/วัน)"],[10,50.1,"CrCl 10–50","15 mg/kg ทุก 24–72 ชม."],[0,10,"CrCl < 10","15 mg/kg ทุก 72–96 ชม."]], hd:"15 mg/kg ทุก 72–96 ชม. (+ เพิ่ม 7.5 mg/kg หลังฟอกไต)"}],
+   note:"CRRT: 15 mg/kg ทุก 24–72 ชม.; CAPD: สูญเสีย 20–40 mg ต่อลิตรของ dialysate/วัน"},
+ 
+ {n:"Tenofovir (PO)", th:"เทโนโฟเวียร์", c:"Antiretroviral", g:[
+   {l:"", r:[[50.1,G,"CrCl > 50","300 mg ทุก 24 ชม."],[30,50.1,"CrCl 30–49","300 mg ทุก 48 ชม."],[10,30,"CrCl 10–29","300 mg ทุก 72–96 ชม."],[0,10,"CrCl < 10","ไม่มีข้อมูล"]], hd:"300 mg หลังฟอกไตทุกรอบที่ 3 หรือทุก 7 วันหากไม่ได้ฟอกไต"}],
+   note:"CRRT/CAPD: ไม่มีข้อมูล"},
+ 
+ std("Tetracycline", "เตตราไซคลิน", "Tetracycline", "250–500 mg ทุก 8–12 ชม.", "250–500 mg ทุก 12–24 ชม.", "250–500 mg ทุก 24 ชม.", "250–500 mg ทุก 24 ชม.", "CRRT: 250–500 mg ทุก 12–24 ชม.; CAPD: 250–500 mg ทุก 24 ชม."),
+ std("Tigecycline", "ไทเกอไซคลิน", "Glycylcycline", "100 mg IV load แล้ว 50 mg IV ทุก 12 ชม.", NC, NC, NC, "CRRT/CAPD: ไม่ต้องปรับขนาดยา"),
+ 
+ {n:"Trimethoprim/Sulfamethoxazole (IV/PO)", th:"โคไตรม็อกซาโซล (ซัลฟา)", c:"Antibacterial", g:[
+   {l:"", r:[[50.1,G,"CrCl > 50","5–20 mg/kg/วัน (แบ่งให้ทุก 6–12 ชม.) | Uncomplicated cystitis: 1 DS tab PO วันละ 2 ครั้ง | S. aureus (MRSA): 1–2 DS tab PO วันละ 2 ครั้ง | PCP: prophylaxis = 1 DS tab วันละครั้ง, treatment = 15–20 mg/kg/วัน IV แบ่งให้ทุก 6–8 ชม."],[30,50.1,"CrCl 30–50","5–20 mg/kg/วัน (แบ่งให้ทุก 6–12 ชม.)"],[10,30,"CrCl 10–29","5–20 mg/kg/วัน (แบ่งให้ทุก 12 ชม.)"],[0,10,"CrCl < 10","ไม่แนะนำ แต่ถ้าจำเป็นต้องใช้: 5–10 mg/kg ทุก 24 ชม."]], hd:"ไม่แนะนำ แต่ถ้าจำเป็นต้องใช้: 5–10 mg/kg ทุก 24 ชม."}],
+   note:"CRRT: 5 mg/kg ทุก 8 ชม.; CAPD: ไม่แนะนำ แต่ถ้าจำเป็นต้องใช้ 5–10 mg/kg ทุก 24 ชม."},
+ 
+ std("Zidovudine", "ซิโดวูดีน", "Antiretroviral", "300 mg PO ทุก 12 ชม.", "300 mg PO ทุก 12 ชม.", "100 mg ทุก 8 ชม.", "100 mg ทุก 8 ชม. (ให้ dose หลังฟอกไตในวันที่ฟอก)", "CRRT: 300 mg ทุก 12 ชม.; CAPD: 100 mg ทุก 8 ชม."),
+ 
+ /* ---------- ยาอื่นๆ ที่ไม่ใช่ยาต้านจุลชีพ (ฐานเดิม) ---------- */
+ {n:"Nitrofurantoin", th:"ไนโตรฟูแรนโทอิน", c:"Urinary antiseptic", r:[
+   [30,G,"ใช้ได้ตามขนาดปกติ"],[0,30,"หลีกเลี่ยง — ประสิทธิภาพลดลงและเสี่ยงพิษต่อเส้นประสาท/ปอด"]]},
+ {n:"Metformin", th:"เมทฟอร์มิน", c:"Biguanide", r:[
+   [45,G,"ใช้ได้ตามปกติ (ตรวจติดตามการทำงานของไตอย่างน้อยปีละครั้ง)"],[30,45,"ไม่ควรเริ่มใหม่; ถ้าใช้อยู่แล้วให้พิจารณาลดขนาด (สูงสุดประมาณ 1,000 mg/วัน)"],[0,30,"ห้ามใช้ (เสี่ยง lactic acidosis)"]],
+   note:"แนวทางอ้างอิง eGFR เป็นหลัก ใช้ CrCl เป็นค่าประมาณ"},
+ {n:"Sitagliptin", th:"ซิตากลิปติน", c:"DPP-4 inhibitor", r:[
+   [45,G,"100 mg วันละครั้ง"],[30,45,"50 mg วันละครั้ง"],[0,30,"25 mg วันละครั้ง"]],
+   note:"แนวทางอ้างอิง eGFR เป็นหลัก ใช้ CrCl เป็นค่าประมาณ"},
+ {n:"Enoxaparin", th:"อีน็อกซาพาริน", c:"LMWH", r:[
+   [30,G,"ไม่ต้องปรับขนาดยา"],[0,30,"รักษา: 1 mg/kg วันละครั้ง | ป้องกัน: 30 mg วันละครั้ง"]],
+   note:"พิจารณาติดตาม anti-Xa ในผู้ป่วยไตบกพร่อง"},
+ {n:"Rivaroxaban (AF)", th:"ไรวาร็อกซาบัน (โรคหัวใจห้องบนสั่นพลิ้ว)", c:"DOAC", r:[
+   [50,G,"20 mg วันละครั้ง พร้อมอาหารเย็น"],[15,50,"15 mg วันละครั้ง พร้อมอาหารเย็น"],[0,15,"หลีกเลี่ยง"]]},
+ {n:"Dabigatran (AF)", th:"ดาบิกาทราน (โรคหัวใจห้องบนสั่นพลิ้ว)", c:"DOAC", r:[
+   [30,G,"150 mg วันละ 2 ครั้ง"],[15,30,"75 mg วันละ 2 ครั้ง (ตามฉลากสหรัฐฯ)"],[0,15,"หลีกเลี่ยง"]],
+   note:"ยาขับทางไตสูง (~80%) ควรประเมินการทำงานของไตสม่ำเสมอ"},
+ {n:"Gabapentin", th:"กาบาเพนติน", c:"Anticonvulsant", r:[
+   [60,G,"900–3,600 mg/วัน แบ่ง 3 ครั้ง"],[30,60,"400–1,400 mg/วัน แบ่ง 2 ครั้ง"],[15,30,"200–700 mg/วัน วันละครั้ง"],[0,15,"100–300 mg/วัน วันละครั้ง"]]},
+ {n:"Tramadol", th:"ทรามาดอล", c:"Opioid", r:[
+   [30,G,"ไม่ต้องปรับขนาดยา"],[0,30,"ทุก 12 ชม. สูงสุด 200 mg/วัน"]]},
+ {n:"Allopurinol", th:"อัลโลพูรินอล", c:"Xanthine oxidase inhibitor", r:[
+   [60,G,"เริ่ม 100 mg/วัน แล้วค่อยปรับขึ้น"],[30,60,"เริ่ม 50–100 mg/วัน แล้วค่อยๆ ปรับขึ้น"],[0,30,"เริ่ม 50 mg/วัน (หรือวันเว้นวัน) แล้วค่อยๆ ปรับขึ้นตามผลยูริก"]],
+   note:"ปรับขึ้นทีละน้อยจนถึงเป้าหมายกรดยูริก"},
+ {n:"Colchicine (gout)", th:"โคลชิซีน (เกาต์)", c:"Anti-gout", r:[
+   [30,G,"ไม่ต้องปรับขนาดยา (ติดตามอาการไม่พึงประสงค์)"],[0,30,"ป้องกัน: เริ่ม 0.3 mg/วัน | โจมตีเฉียบพลัน: 0.6 mg ครั้งเดียว ไม่ให้ซ้ำภายใน 2 สัปดาห์"]]},
+ {n:"Famotidine", th:"ฟาโมทิดีน", c:"H2 blocker", r:[
+   [50,G,"ไม่ต้องปรับขนาดยา"],[0,50,"ลดขนาดเหลือครึ่งหนึ่ง หรือยืดระยะห่างเป็นทุก 36–48 ชม."]]},
+];
+ 
+const dl = document.getElementById("drugList");
+DRUGS.forEach(d => {
+  dl.insertAdjacentHTML("beforeend", `<option value="${d.n}">${d.th}</option>`);
+});
+ 
+function renderDrug(){
+  const q = document.getElementById("drugIn").value.trim().toLowerCase();
+  const out = document.getElementById("drugOut");
+  if (!q){ out.innerHTML = ""; return; }
+  const hits = DRUGS.filter(d => d.n.toLowerCase().includes(q) || d.th.toLowerCase().includes(q));
+  if (!hits.length){
+    out.innerHTML = '<div class="drug">ไม่พบยาในฐานข้อมูล — ลองพิมพ์ชื่อสามัญทางยา (generic name)</div>';
+    return;
+  }
+  const cv = Math.round(crcl * 10) / 10;   // เทียบด้วยค่าที่แสดงบนหน้าจอ (ทศนิยม 1 ตำแหน่ง)
+  out.innerHTML = hits.map(d => {
+    const groups = d.g || [{l:"", r:d.r}];
+    const body = groups.map(gr => {
+      const bands = gr.r.map(x => {
+        const lo = x[0], hi = x[1], txt = x[x.length-1];
+        const label = x.length === 4 ? x[2] : (hi >= G ? `CrCl ≥ ${lo}` : (lo === 0 ? `CrCl < ${hi}` : `CrCl ${lo} ถึงน้อยกว่า ${hi}`));
+        const m = cv >= lo && cv < hi;
+        return `<div class="band ${m?'match':''}"><b>${m?'✓ ตรงกับผู้ป่วย — ':''}${label} mL/min</b>${txt}</div>`;
+      }).join("");
+      const hd = gr.hd ? `<div class="band hd"><b>ผู้ป่วยฟอกไต (Intermittent HD)</b>${gr.hd}</div>` : "";
+      return (gr.l ? `<div class="grp">${gr.l}</div>` : "") + bands + hd;
+    }).join("");
+    return `<div class="drug"><h3>${d.n}${d.src?'<span class="src">ตาราง ม.ธรรมศาสตร์ 2022</span>':''}</h3><div class="cls">${d.th} · ${d.c}</div>${body}${d.note?`<div class="note"><b>หมายเหตุ:</b> ${d.note}</div>`:""}</div>`;
+  }).join("");
+}
+ 
+/* =====================================================================
+   แอพใหม่ "ระบบปรับขนาดยาตามน้ำหนัก" (ธีมเขียว) — สูตรอ้างอิงไฟล์ Excel ที่ให้มา
+   row(รูปแบบยา, ความแรง, ฟังก์ชัน(น้ำหนัก) → ตัวเลข หรือ [ต่ำ, สูง], หน่วย, fixed?)
+   ===================================================================== */
+const row  = (form, str, fn, unit, fixed) => ({form, str, fn, unit, fixed});
+const sub  = t => ({sub:t});
+const info = (k, v) => ({k, v});
+const cat  = t => ({cat:t});
+const blk  = (t, rows, note) => ({t, rows, note});
+const XL   = "หมายเหตุ (แก้จาก Excel): ";
+ 
+/* ---------- ชีต Other: ยาเด็กทั่วไป ---------- */
+const KID_OTHER = [
+ cat("Analgesic (แก้ปวด/ลดไข้)"),
+ blk("Paracetamol 10–15 mg/kg/dose q 4–6 hour", [
+   row("Drop","60 mg/0.6 ml", w=>[(w*10*0.6)/60,(w*15*0.6)/60], "cc/dose"),
+   row("Syrup","120 mg/5 ml", w=>[(w*10*5)/120,(w*15*5)/120], "cc/dose"),
+   row("Tab","325 mg", w=>[w*10/325,w*15/325], "tab/dose"),
+   row("Tab","500 mg", w=>[w*10/500,w*15/500], "tab/dose")]),
+ 
+ cat("NSAIDs"),
+ blk("Ibuprofen 5–10 mg/kg/day q 4–6 hour", [
+   row("Syrup","100 mg/5 ml", w=>[(w*5*5)/100,(w*10*5)/100], "cc tid"),
+   row("Tab","200 mg", w=>[w*5/200,w*10/200], "tab tid"),
+   row("Tab","400 mg", w=>[w*5/400,w*10/400], "tab tid")],
+   "สูตรใน Excel คำนวณเป็นขนาดต่อครั้ง (ต่อ dose) ตามที่แสดง"),
+ 
+ cat("Antihistamine (แก้แพ้)"),
+ blk("CPM 0.35 mg/kg/day PO, SC tid–qid", [
+   row("Syrup","2 mg/5 ml", w=>(0.35*w/3)/0.4, "cc tid"),
+   row("Tab","4 mg", w=>(0.35*w/3)/4, "tab tid"),
+   row("Inj","10 mg/ml", w=>(0.35*w/3)/10, "cc tid")]),
+ blk("Diphenhydramine (Benadryl) 5 mg/kg/day", [
+   row("Syrup","2.5 mg/ml", w=>(5*w/3)/2.5, "cc tid"),
+   row("Syrup","2.5 mg/ml", w=>(5*w/4)/2.5, "cc qid"),
+   row("Tab","50 mg", w=>(5*w/3)/50, "tab tid")],
+   XL+"ช่อง Tab 50 mg ในไฟล์ Excel เสีย (#REF!) จึงใช้สูตรเดียวกับ syrup: (5 mg/kg/วัน ÷ 3 ครั้ง) ÷ 50 mg"),
+ blk("Hydroxyzine 2 mg/kg/day PO tid–qid", [
+   row("Tab","10 mg", w=>(2*w/3)/10, "tab tid"),
+   row("Syrup","10 mg/5 ml", w=>(2*w/3)/2, "cc tid")]),
+ blk("Cetirizine 0.25 mg/kg/day (เด็ก < 2 ปี)", [
+   row("Syrup","5 mg/5 ml", w=>0.25*w, "cc hs"),
+   row("Tab","10 mg", w=>(0.25*w)/10, "tab hs"),
+   row("Syrup","5 mg/ml", w=>(0.25*w)/5, "ml")],
+   XL+"แถว 5 mg/ml ในไฟล์ Excel คำนวณเป็น W × 0.25 (ไม่ได้หารความเข้มข้น) จึงแก้เป็น (0.25 × W) ÷ 5"),
+ blk("Loratadine 10 mg/tab", [
+   info("2–5 ปี / < 30 กก.","5 mg PO = 0.5 Tab/day"),
+   info("> 30 กก.","10 mg PO = 1 Tab/day"),
+   info("> 6 ปี","10 mg PO = 1 Tab/day")]),
+ blk("Levocetirizine 5 mg/tab", [
+   info("> 6 ปี","5 mg PO OD")]),
+ blk("Brompheniramine", [
+   sub("< 6 ปี: 0.125 mg/kg/dose q 4–6 hr (Max 8 mg/day)"),
+   row("Syrup","2 mg/5 ml", w=>(0.125*w)/0.4, "cc/dose"),
+   sub("6–12 ปี: 2–4 mg/dose"),
+   row("Syrup","2 mg/5 ml", ()=>[5,10], "cc/dose", true)]),
+ 
+ cat("Antiemetic (แก้คลื่นไส้อาเจียน)"),
+ blk("Domperidone 0.2–0.4 mg/kg/dose PO tid–qid", [
+   row("Syrup","5 mg/5 ml", w=>0.3*w, "cc tid"),
+   row("Tab","10 mg", w=>0.3*w/10, "tab tid")]),
+ blk("Metoclopramide — Intestinal intubation, Small bowel", [
+   sub("< 6 ปี: 0.1 mg/kg IV ช้า ๆ ใน 1–2 นาที เป็น single undiluted dose"),
+   row("INJ","< 6 ปี", w=>0.1*w, "mg/dose"),
+   info("6–14 ปี","2.5–5 mg IV ช้า ๆ ใน 1–2 นาที เป็น single undiluted dose"),
+   info("> 15 ปี","10 mg IV ช้า ๆ ใน 1–2 นาที เป็น single undiluted dose")]),
+ 
+ cat("Mucolytics and Antitussives (ละลายเสมหะ/แก้ไอ)"),
+ blk("Bromhexine 0.6–0.8 mg/kg/day PO tid", [
+   row("Syrup","4 mg/5 ml", w=>[(0.6*w/3)/0.8,(0.8*w/3)/0.8], "cc tid"),
+   row("Tab","8 mg", w=>[(0.6*w/3)/8,(0.8*w/3)/8], "tab tid")]),
+ blk("Ambroxol 1.5–2 mg/kg/day", [
+   row("Syrup","15 mg/5 ml", w=>[(1.5*w)/3/3,((2*w)/3)/3], "cc TID")]),
+ blk("Guaifenesin ≥ 2 ปี: 12 mg/kg/day", [
+   row("Syrup","100 mg/5 ml", w=>(12*w/3)/20, "cc TID")])
+];
+ 
+/* ---------- ชีต Antibiotic ---------- */
+const KID_AB = [
+ cat("Antibiotic"),
+ blk("Amoxicillin (Amoxycillin)", [
+   sub("Mild–Moderate infection 25–50 mg/kg/day"),
+   row("Syrup","125 mg/5 ml", w=>[(20*w/3)/25,(50*w/3)/25], "cc tid"),
+   row("Syrup","250 mg/5 ml", w=>[(20*w/3)/50,(50*w/3)/50], "cc tid"),
+   row("Cap","250 mg", w=>[(20*w/250)/3,(50*w/250)/3], "cap tid"),
+   row("Cap","500 mg", w=>[(20*w/500)/3,(50*w/500)/3], "cap tid"),
+   sub("Severe infection 80–100 mg/kg/day"),
+   row("Syrup","125 mg/5 ml", w=>[(80*w/3)/25,(100*w/3)/25], "cc tid"),
+   row("Syrup","250 mg/5 ml", w=>[(80*w/3)/50,(100*w/3)/50], "cc tid"),
+   row("Cap","250 mg", w=>[(80*w/250)/3,(100*w/250)/3], "cap tid"),
+   row("Cap","500 mg", w=>[(80*w/500)/3,(100*w/500)/3], "cap tid")],
+   "สูตร Mild–Moderate ในไฟล์ Excel คำนวณจาก 20–50 mg/kg/วัน (หัวข้อระบุ 25–50) — แสดงตามสูตรในไฟล์"),
+ 
+ blk("Augmentin (Amoxicillin/Clavulanate)", [
+   sub("Acute otitis media — mild to moderate: amoxicillin 90 mg/kg/day + clavulanate 6.4 mg/kg/day แบ่งให้ 2 ครั้ง"),
+   row("Syrup","6–12 ปี (amox 80 mg/ml)", w=>(90*w/2)/80, "cc BID × 5–7 วัน"),
+   row("Syrup","2–5 ปี (amox 80 mg/ml)", w=>(90*w/2)/80, "cc BID × 7 วัน"),
+   row("Syrup","< 2 ปี (amox 80 mg/ml)", w=>(90*w/2)/80, "cc BID × 10 วัน"),
+   info("Severe infection","amoxicillin 90 mg/kg/day + clavulanate 6.4 mg/kg/day แบ่งให้ 2 ครั้ง นาน 10 วัน"),
+   sub("Other infection (ส่วน amoxicillin) — UTI / ติดเชื้อผิวหนังและเนื้อเยื่อใต้ผิวหนัง"),
+   sub("อายุ 3 เดือนขึ้นไป / < 40 กก.: 25–45 mg/kg/day"),
+   row("Syrup","amox 80 mg/ml", w=>[(25*w/2)/80,(45*w/2)/80], "cc BID"),
+   row("Tab","875 mg", w=>[(25*w/2)/875,(45*w/2)/875], "tab BID"),
+   sub("> 40 กก. — Mild to moderate: 500 mg q 12 hr หรือ 250 mg q 8 hr"),
+   row("Syrup","500 mg q 12 hr", ()=>500/80, "cc q 12 hr", true),
+   row("Syrup","250 mg q 8 hr", ()=>250/80, "cc q 8 hr", true),
+   row("Tab","500 mg q 12 hr", ()=>500/875, "tab q 12 hr", true),
+   row("Tab","250 mg q 8 hr", ()=>250/875, "tab q 8 hr", true),
+   sub("> 40 กก. — Severe: 875 mg q 12 hr หรือ 500 mg q 8 hr"),
+   row("Syrup","875 mg q 12 hr", ()=>875/80, "cc q 12 hr", true),
+   row("Syrup","500 mg q 8 hr", ()=>500/80, "cc q 8 hr", true)],
+   XL+"แถวสุดท้ายของ otitis media ในไฟล์ Excel พิมพ์ว่า “> 2 years” แก้เป็น “< 2 ปี” (10 วัน) · สูตรในไฟล์ใช้ความเข้มข้น amoxicillin 80 mg/ml (400/57 mg ใน 5 ml) ซึ่งต่างจาก ES 600/42.9 (120 mg/ml) ที่ตรงกับสูตร 90/6.4 — ควรตรวจสอบชนิดยาที่จ่ายจริง"),
+ 
+ blk("Cephalexin 25–50 mg/kg/day q 6–8 hr", [
+   row("Syrup","125 mg/5 ml", w=>[(25*w/4)/25,(50*w/4)/25], "cc q 6 hr"),
+   row("Cap","250 mg", w=>[(25*w/4)/250,(50*w/4)/250], "cap q 6 hr"),
+   row("Syrup","125 mg/5 ml", w=>[(25*w/3)/25,(50*w/3)/25], "cc q 8 hr"),
+   row("Cap","250 mg", w=>[(25*w/3)/250,(50*w/3)/250], "cap q 8 hr")],
+   XL+"ใน Excel ช่องสูงสุดของ syrup q 8 hr เป็น (W/3)/25 (ขาด 50) และ cap q 8 hr ติดป้าย “q 6 hr” จึงแก้เป็น 25–50 mg/kg/วัน และ q 8 hr"),
+ 
+ blk("Cefixime 8 mg/kg/day q 12–24 hr", [
+   row("Syrup","100 mg/5 ml", w=>(8*w/2)/20, "cc BID"),
+   row("Cap","100 mg", w=>(8*w/2)/100, "cap BID"),
+   row("Syrup","100 mg/5 ml", w=>(8*w)/20, "cc OD"),
+   row("Cap","100 mg", w=>(8*w)/100, "cap OD")]),
+ 
+ blk("Metronidazole 30–50 mg/kg/day q 8–12 hr", [
+   row("Syrup","200 mg/5 ml", w=>[(30*w/3)/40,(50*w/3)/40], "cc q 8 hr"),
+   row("Syrup","200 mg/5 ml", w=>[(30*w/2)/40,(50*w/2)/40], "cc q 12 hr")]),
+ 
+ blk("Dicloxacillin 25–50 mg/kg/day PO qid ac", [
+   row("Syrup","62.5 mg/5 ml", w=>[(25*w/4)*0.08,(50*w/4)*0.08], "cc qid"),
+   row("Cap","250 mg", w=>[(25*w/4)/250,(50*w/4)/250], "cap qid"),
+   row("Cap","500 mg", w=>[(25*w/4)/500,(50*w/4)/500], "cap qid")]),
+ 
+ blk("Ciprofloxacin 10–20 mg/kg/dose q 12 hr (Max 750 mg/dose)", [
+   row("Tab","250 mg", w=>[(10*w)/250,(20*w)/250], "tab")]),
+ 
+ blk("Clarithromycin 15 mg/kg/day q 12 hr (Max 1,000 mg/day)", [
+   row("Tab","500 mg", w=>(15*w/2)/500, "tab q 12 hr")]),
+ 
+ blk("Erythromycin 30–50 mg/kg/day q 6–12 hr", [
+   row("Syrup","125 mg/5 ml", w=>[(30*w/4)/25,(50*w)/4/25], "cc q 6 hr"),
+   row("Syrup","125 mg/5 ml", w=>[(30*w/2)/25,(50*w/2)/25], "cc q 12 hr")]),
+ 
+ blk("Clindamycin 8–40 mg/kg/day q 8–12 hr", [
+   row("Tab","300 mg", w=>[(8*w/3)/300,(40*w/3)/300], "tab q 8 hr"),
+   row("INJ","600 mg/amp", w=>[(8*w/3),(40*w/3)], "mg q 8 hr")]),
+ 
+ blk("Sulfamethoxazole + Trimethoprim (> 2 เดือน: TMP 8 mg/kg/day, SMX 40 mg/kg/day q 12 hr)", [
+   info("Max dose","SMX 1,600 mg/day, TMP 300 mg/day"),
+   row("Syrup","200/40 mg ต่อ 5 ml", w=>(40*w/2)/40, "cc q 12 hr"),
+   row("Dose","SMX", w=>40*w, "mg/day"),
+   row("Dose","TMP", w=>8*w, "mg/day"),
+   row("Tab","400/80 mg", w=>40*w/400/2, "tab q 12 hr")],
+   XL+"แถว syrup ในไฟล์ Excel คำนวณเป็น (40×W/80)/2 ซึ่งได้ครึ่งหนึ่งของขนาดจริง (SMX 200 mg ต่อ 5 ml = 40 mg/ml) จึงแก้เป็น (40×W ÷ 2) ÷ 40 ให้สอดคล้องกับแถว Tab"),
+ 
+ blk("Azithromycin 5–12 mg/kg/day OD", [
+   row("Syrup","200 mg/5 ml", w=>[(5*w)/40,(12*w)/40], "cc OD"),
+   row("Cap","250 mg", w=>[(5*w)/250,(12*w)/250], "cap OD")])
+];
+ 
+/* ---------- ชีต Antiviral ---------- */
+const KID_AV = [
+ cat("Antiviral"),
+ blk("Tamiflu (Oseltamivir) 4 mg/kg/day PO bid × 5 วัน", [
+   row("Syrup","10 mg/ml", w=>(4*w/10)/2, "cc bid"),
+   row("Cap","75 mg", w=>(4*w/2)/75, "cap bid"),
+   sub("ขนาดตามน้ำหนัก/อายุ"),
+   info("ผู้ใหญ่","75 mg bid"),
+   info("> 40 กก.","75 mg bid"),
+   info("23–40 กก.","60 mg bid"),
+   info("15–23 กก.","45 mg bid"),
+   info("> 1 ปี, < 15 กก.","30 mg bid"),
+   info("6–11 เดือน","25 mg bid"),
+   info("3–5 เดือน","20 mg bid"),
+   info("< 3 เดือน","12 mg bid")]),
+ blk("Acyclovir 200 mg/Tab", [
+   sub("อายุ > 28 วัน: 40–80 mg/kg/day"),
+   row("Tab","200 mg", w=>[(40*w/3)/200,(80*w/3)/200], "Tab q 8 hr"),
+   info("> 2 ปี","800 mg = 4 Tab q 8 hr")])
+];
+ 
+const KID_PAGES = [
+  {list:KID_OTHER, f:"kfk", out:"ko-gk"},
+  {list:KID_AB,    f:"kfb", out:"ko-gb"},
+  {list:KID_AV,    f:null,  out:"ko-gv"}
+];
+ 
+let kw = NaN;   // น้ำหนักเด็ก — ใช้ร่วมกันทั้ง 3 หน้า
+ 
+function fmt(x){
+  if (!isFinite(x)) return "—";
+  const s = Math.abs(x) < 0.1 ? x.toFixed(3) : x.toFixed(2);
+  return s.replace(/\.?0+$/, "");
+}
+ 
+function rowHTML(r, w){
+  if (r.sub) return `<div class="gsub">${r.sub}</div>`;
+  if (r.k)   return `<div class="grow"><div class="gl">${r.k}</div><div class="gr t">${r.v}</div></div>`;
+  let res = "—";
+  if (r.fixed || w > 0){
+    const v = r.fn(w);
+    res = (Array.isArray(v) ? `${fmt(v[0])} ถึง ${fmt(v[1])}` : fmt(v)) + ` <span class="gu">${r.unit}</span>`;
+  }
+  return `<div class="grow"><div class="gl"><span class="gf">${r.form}</span>${r.str}</div><div class="gr">${res}</div></div>`;
+}
+ 
+function renderKids(){
+  const w = kw > 0 ? kw : NaN;
+  KID_PAGES.forEach(pg => {
+    const out = document.getElementById(pg.out);
+    const q = pg.f ? document.getElementById(pg.f).value.trim().toLowerCase() : "";
+    let h = "";
+    if (!(w > 0)) h += '<div class="gwarn">กรอกน้ำหนักเด็กเพื่อคำนวณขนาดยา</div>';
+    else if (w > 40) h += '<div class="gwarn">น้ำหนักมากกว่า 40 กก. — ตรวจสอบว่าขนาดยาไม่เกินขนาดสูงสุดของผู้ใหญ่</div>';
+    pg.list.forEach(b => {
+      if (b.cat){ if (!q) h += `<div class="gcat">${b.cat}</div>`; return; }
+      if (q && !b.t.toLowerCase().includes(q)) return;
+      h += `<div class="gblock"><h3>${b.t}</h3>${b.rows.map(r => rowHTML(r, w)).join("")}${b.note ? `<div class="gnote">${b.note}</div>` : ""}</div>`;
+    });
+    if (q && !pg.list.some(b => !b.cat && b.t.toLowerCase().includes(q))) h += '<div class="gblock">ไม่พบยาที่ค้นหา</div>';
+    out.innerHTML = h;
+  });
+}
+ 
+function onKW(el){
+  kw = parseFloat(el.value);
+  ["kwk","kwb","kwv"].forEach(id => { const e = document.getElementById(id); if (e && e !== el) e.value = el.value; });
+  renderKids();
+}
+ 
+/* ---------- Warfarin: ร้อยละการปรับยา + จัดรูปแบบเม็ดยา ---------- */
+const WT = [                                   // เรียงจากเม็ดใหญ่ → เล็ก
+  {k:"p", name:"สีชมพู", mg:5},
+  {k:"b", name:"สีฟ้า",  mg:3},
+  {k:"w", name:"สีขาว",  mg:1}
+];
+const DAYS   = ["จันทร์","อังคาร","พุธ","พฤหัสบดี","ศุกร์","เสาร์","อาทิตย์"];
+const DAYS_S = ["จ.","อ.","พ.","พฤ.","ศ.","ส.","อา."];
+const CNT_OPT = [0.5, 1, 1.5, 2, 3, 4];
+const wf = {p:{n:1, d:Array(7).fill(false)}, b:{n:1, d:Array(7).fill(false)}, w:{n:1, d:Array(7).fill(false)}};
+let wfAuto = false;                            // ช่อง Dose เดิมถูกเติมอัตโนมัติจากการติ๊กหรือไม่
+ 
+const fracTxt = x => (Math.floor(x) ? Math.floor(x) : "") + (x % 1 ? "½" : "");           // 1½
+const tabTxt  = x => x === 0.5 ? "ครึ่งเม็ด" : (x % 1 ? Math.floor(x) + " เม็ดครึ่ง" : x + " เม็ด");
+const mgFmt   = x => String(Math.round(x * 10) / 10);
+ 
+function buildWF(){
+  document.getElementById("wfGrid").innerHTML = WT.map(t => `
+    <div class="wcol">
+      <div class="wch">
+        <i class="tdot ${t.k}"></i><b>เม็ด${t.name}</b><span class="gu">${t.mg} mg</span><span class="wsp"></span>
+        <select aria-label="จำนวนเม็ดต่อวัน (${t.name})" onchange="wfCnt('${t.k}',this.value)">
+          ${CNT_OPT.map(v => `<option value="${v}" ${v === 1 ? "selected" : ""}>${tabTxt(v)}/วัน</option>`).join("")}
+        </select>
+        <button type="button" class="mini" onclick="wfAll('${t.k}')">ทุกวัน</button>
+      </div>
+      <div class="wdays">${DAYS_S.map((d, i) =>
+        `<label class="dchip"><input type="checkbox" data-k="${t.k}" data-i="${i}" onchange="wfDay('${t.k}',${i},this.checked)"><span>${d}</span></label>`).join("")}
+      </div>
+    </div>`).join("");
+}
+function wfCnt(k, v){ wf[k].n = parseFloat(v); wfSync(); }
+function wfDay(k, i, on){ wf[k].d[i] = on; wfSync(); }
+function wfAll(k){
+  const all = wf[k].d.every(Boolean);
+  wf[k].d = Array(7).fill(!all);
+  document.querySelectorAll(`#wfGrid input[data-k="${k}"]`).forEach(e => e.checked = !all);
+  wfSync();
+}
+const curDay = i => { const c = {p:0, b:0, w:0}; WT.forEach(t => { if (wf[t.k].d[i]) c[t.k] = wf[t.k].n; }); return c; };
+const comboMg = c => WT.reduce((s, t) => s + (c[t.k] || 0) * t.mg, 0);
+const curWeek = () => { let s = 0; for (let i = 0; i < 7; i++) s += comboMg(curDay(i)); return s; };
+ 
+function wfSync(){
+  const tw = curWeek(), o = document.getElementById("wfo");
+  document.getElementById("wfSum").textContent = tw > 0 ? `รวมจากเม็ดที่เลือก = ${mgFmt(tw)} mg/สัปดาห์` : "";
+  if (tw > 0){ o.value = mgFmt(tw); wfAuto = true; }
+  else if (wfAuto){ o.value = ""; wfAuto = false; }
+  renderWF();
+}
+function wfManual(){ wfAuto = false; renderWF(); }
+ 
+/* --- หารูปแบบเม็ดยาที่กินง่ายที่สุดให้ได้ TWD ตามเป้าหมาย ---
+   หลักการ: แบ่งขนาดยาแต่ละวันให้ใกล้เคียงกันที่สุด (ต่างกันไม่เกิน 1 mg/วัน)
+   → เลือกชุดเม็ดที่ใช้ "จำนวนเม็ดรวม/สัปดาห์น้อยที่สุด" → "จำนวนสีน้อยที่สุด"
+   → ถ้าเท่ากัน เลือกสีที่ผู้ป่วยมีอยู่เดิม → ใช้เม็ดใหญ่ก่อน
+   (หน่วยภายในเป็น 0.5 mg; ใช้เม็ดครึ่งเฉพาะเมื่อ TWD ลงท้าย .5)                           */
+function tabCombos(v, half){                    // v = หน่วย 0.5 mg
+  const out = [], H = half ? 1 : 0;
+  for (let nP = 0; nP * 10 <= v; nP++) for (let hP = 0; hP <= H; hP++){
+    const r1 = v - nP * 10 - hP * 5; if (r1 < 0) continue;
+    for (let nB = 0; nB * 6 <= r1; nB++) for (let hB = 0; hB <= H; hB++){
+      const r2 = r1 - nB * 6 - hB * 3; if (r2 < 0) continue;
+      let nW, hW = 0;
+      if (r2 % 2 === 0) nW = r2 / 2;
+      else { if (!half) continue; nW = (r2 - 1) / 2; hW = 1; }
+      out.push({p: nP + hP / 2, b: nB + hB / 2, w: nW + hW / 2});
+    }
+  }
+  return out;
+}
+const pieces = c => WT.reduce((s, t) => s + Math.ceil(c[t.k]), 0);
+const splits = c => WT.reduce((s, t) => s + (c[t.k] % 1 ? 1 : 0), 0);
+const kinds  = c => WT.filter(t => c[t.k] > 0).length;
+ 
+function planRegimen(T, curColors){
+  const isHalf = Math.abs(T - Math.round(T)) > 1e-9;
+  const step = isHalf ? 1 : 2, D = Math.round(T * 2) / step;
+  const q = Math.floor(D / 7), r = D % 7;
+  const lowU = q * step, highU = (q + 1) * step;
+  const lows = tabCombos(lowU, isHalf), highs = r > 0 ? tabCombos(highU, isHalf) : [null];
+  let best = null, bestKey = null;
+  for (const lo of lows) for (const hi of highs){
+    const nl = 7 - r, nh = r;
+    const wk = {};
+    WT.forEach(t => wk[t.k] = lo[t.k] * nl + (hi ? hi[t.k] * nh : 0));
+    const used = WT.filter(t => wk[t.k] > 0);
+    const key = [
+      nl * splits(lo) + (hi ? nh * splits(hi) : 0),
+      nl * pieces(lo) + (hi ? nh * pieces(hi) : 0),
+      used.length,
+      curColors ? used.filter(t => !curColors.has(t.k)).length : 0,
+      wk.w, wk.b
+    ];
+    let better = !best;
+    if (best) for (let i = 0; i < key.length; i++){ if (key[i] !== bestKey[i]){ better = key[i] < bestKey[i]; break; } }
+    if (better){ best = {lo, hi}; bestKey = key; }
+  }
+  // วันที่ได้ขนาดสูงกว่า: กระจายห่างกันตลอดสัปดาห์ (เริ่มวันจันทร์)
+  const highDays = new Set();
+  for (let i = 0; i < r; i++) highDays.add(Math.floor(i * 7 / r));
+  const sched = [];
+  for (let d = 0; d < 7; d++) sched.push(highDays.has(d) ? best.hi : best.lo);
+  return {sched, isHalf};
+}
+ 
+const comboKey = c => WT.map(t => c[t.k]).join("/");
+function comboTxt(c){
+  const parts = WT.filter(t => c[t.k] > 0).map(t => `${t.name} ${tabTxt(c[t.k])}`);
+  return parts.length ? parts.join(" + ") : "งดยา";
+}
+function chips(c){
+  const parts = WT.filter(t => c[t.k] > 0).map(t => `<i class="tdot ${t.k}"></i>${fracTxt(c[t.k])}`);
+  return parts.length ? parts.join(" ") : "—";
+}
+ 
+function renderWF(){
+  const o = parseFloat(document.getElementById("wfo").value);
+  const n = parseFloat(document.getElementById("wfn").value);
+  const out = document.getElementById("wfOut"), plan = document.getElementById("wfPlan");
+ 
+  /* ร้อยละการปรับยา */
+  if (!(o > 0) || isNaN(n) || n < 0){
+    out.innerHTML = '<div class="gwarn">กรอก Dose เดิม และ Dose ปรับใหม่ (mg/สัปดาห์) เพื่อคำนวณร้อยละการปรับยา</div>';
+  } else {
+    const p = (n - o) / o * 100;                 // (ใหม่ − เดิม) ÷ เดิม × 100
+    const sign = p > 0 ? "+" : "";
+    const dir = p > 0 ? "เพิ่มขึ้น ▲" : (p < 0 ? "ลดลง ▼" : "ไม่เปลี่ยนแปลง");
+    const warn = Math.abs(p) > 20
+      ? '<div class="gwarn">เปอร์เซ็นต์การปรับยาเกินประมาณร้อยละ 20 ต่อครั้ง — พิจารณาทบทวนขนาดยา</div>'
+      : (p !== 0 ? '<div class="gnote" style="color:var(--pink-d)">อยู่ในช่วงประมาณร้อยละ 20 ต่อครั้งที่แนะนำ</div>' : "");
+    out.innerHTML = `<div class="gblock" style="text-align:center">
+        <div class="unit">เปอร์เซ็นต์การปรับยา</div>
+        <div class="wbig">${sign}${p.toFixed(2)}%</div>
+        <div class="unit">${dir} · ${mgFmt(o)} → ${mgFmt(n)} mg/สัปดาห์ (เปลี่ยน ${sign}${mgFmt(n - o)} mg/สัปดาห์)</div>
+        ${warn}</div>`;
+  }
+ 
+  /* รูปแบบการรับประทานที่แนะนำ */
+  if (isNaN(n) || n <= 0){ plan.innerHTML = ""; return; }
+  if (Math.abs(n * 2 - Math.round(n * 2)) > 1e-9){
+    plan.innerHTML = '<div class="gwarn">Dose ปรับใหม่ต้องเป็นจำนวนที่ลงตัวกับครึ่งเม็ด (เช่น 28 หรือ 22.5 mg/สัปดาห์) จึงจะจัดรูปแบบเม็ดยาได้</div>';
+    return;
+  }
+  if (n > 140){ plan.innerHTML = '<div class="gwarn">Dose ปรับใหม่สูงกว่า 140 mg/สัปดาห์ — กรุณาตรวจสอบตัวเลขอีกครั้ง</div>'; return; }
+ 
+  const tw = curWeek(), hasCur = tw > 0;
+  const curColors = hasCur ? new Set(WT.filter(t => wf[t.k].d.some(Boolean)).map(t => t.k)) : null;
+  const {sched, isHalf} = planRegimen(n, curColors);
+  const total = sched.reduce((s, c) => s + comboMg(c), 0);
+ 
+  // สรุปเป็นข้อความ: จัดกลุ่มวันที่ใช้ชุดเม็ดเหมือนกัน
+  const groups = new Map();
+  sched.forEach((c, i) => { const k = comboKey(c); if (!groups.has(k)) groups.set(k, {c, days:[]}); groups.get(k).days.push(i); });
+  const arr = [...groups.values()].sort((a, b) => b.days.length - a.days.length);
+  let lines;
+  if (arr.length === 1) lines = [`<b>${comboTxt(arr[0].c)}</b> (รวม ${mgFmt(comboMg(arr[0].c))} mg) <b>ทุกวัน</b>`];
+  else lines = arr.slice().reverse().map((g, idx, a) => {
+    const when = idx === a.length - 1 ? "วันที่เหลือ" : "วัน" + g.days.map(i => DAYS[i]).join(", วัน");
+    return `${when}: <b>${comboTxt(g.c)}</b> (รวม ${mgFmt(comboMg(g.c))} mg)`;
+  });
+ 
+  // สิ่งที่เปลี่ยนจากเดิม (กรณีทุกวันเปลี่ยนเท่ากัน)
+  let chg = "";
+  if (hasCur){
+    const parts = [];
+    WT.forEach(t => {
+      const d = sched.map((c, i) => c[t.k] - curDay(i)[t.k]);
+      if (d.every(x => x === d[0]) && d[0] !== 0) parts.push(`${d[0] > 0 ? "เพิ่ม" : "ลด"}เม็ด${t.name} ${tabTxt(Math.abs(d[0]))}ทุกวัน`);
+    });
+    chg = parts.length
+      ? `<div class="chgtxt"><b>สิ่งที่เปลี่ยนจากเดิม:</b> ${parts.join(" และ ")}</div>`
+      : (n === tw ? '<div class="chgtxt">ขนาดยารวมเท่าเดิม</div>' : '<div class="chgtxt"><b>สิ่งที่เปลี่ยนจากเดิม:</b> ดูตารางเปรียบเทียบรายวันด้านล่าง</div>');
+  }
+ 
+  const rows = sched.map((c, i) => {
+    const cur = curDay(i), changed = hasCur && comboKey(cur) !== comboKey(c);
+    return `<tr class="${changed ? "chg" : ""}"><td class="l">${DAYS[i]}</td>${hasCur ? `<td>${chips(cur)}</td>` : ""}<td>${chips(c)}</td><td>${mgFmt(comboMg(c))}</td></tr>`;
+  }).join("");
+ 
+  plan.innerHTML = `<div class="plan">
+    <h3>รูปแบบการรับประทานที่แนะนำ — ${mgFmt(n)} mg/สัปดาห์</h3>
+    ${lines.map(l => `<div class="line">${l}</div>`).join("")}
+    ${isHalf ? '<div class="gnote">ขนาดยารวมนี้ต้องใช้เม็ดครึ่ง (หักครึ่งเม็ดตามเส้นแบ่งของเม็ดยา)</div>' : ""}
+    ${chg}
+    <table class="tbl wtbl">
+      <tr><th>วัน</th>${hasCur ? "<th>เดิม</th>" : ""}<th>ใหม่</th><th>mg</th></tr>
+      ${rows}
+      <tfoot><tr><td class="l">รวม/สัปดาห์</td>${hasCur ? `<td>${mgFmt(tw)} mg</td>` : ""}<td>${mgFmt(total)} mg</td><td></td></tr></tfoot>
+    </table>
+    <div class="ok">${Math.abs(total - n) < 1e-9 ? "✓ ผลรวมต่อสัปดาห์ตรงตามเป้าหมาย " + mgFmt(n) + " mg" : "ผลรวมไม่ตรงกับเป้าหมาย — กรุณาตรวจสอบ"}</div>
+    <div class="gnote" style="color:var(--muted)">แนะนำให้รับประทานเวลาเดียวกันทุกวัน · รูปแบบนี้เป็นเพียงการจัดเม็ดยาให้ได้ขนาดรวมตามที่เภสัชกร/แพทย์กำหนด โดยพิจารณาจากระดับ INR และข้อมูลทางคลินิกของผู้ป่วย</div>
+  </div>`;
+}
+ 
+/* ---------- TB ---------- */
+function renderTB(){
+  const w = parseFloat(document.getElementById("tbw").value);
+  const out = document.getElementById("tbOut");
+  const ok = w > 0;
+  let h = "";
+  if (ok && (w < 35 || w > 70)) h += '<div class="gwarn">น้ำหนัก &lt; 35 หรือ &gt; 70 กก. — ให้คำนวณตามน้ำหนักตัว (ดูส่วน “คำนวณตามน้ำหนักตัว” ด้านล่าง)</div>';
+  else h += '<div class="gnote">กรณีน้ำหนัก &lt; 35 หรือ &gt; 70 กก. ให้คำนวณตามน้ำหนักตัว</div>';
+ 
+  const bi = !ok ? -1 : (w >= 70 ? 2 : (w >= 50 ? 1 : (w >= 35 ? 0 : -1)));
+  const T = [["35–49",300,450,1000,800],["50–69",300,600,1500,1000],["&gt; 70",300,600,2000,1200]];
+  h += `<div class="gblock"><h3>ขนาดยา TB ก่อนเริ่มรักษา (mg/วัน)</h3>
+    <table class="tbl"><tr><th>น้ำหนัก (กก.)</th><th>I</th><th>R</th><th>Z</th><th>E</th></tr>
+    ${T.map((r,i) => `<tr class="${i===bi?'hit':''}"><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td></tr>`).join("")}
+    </table></div>`;
+ 
+  const P = [
+    ["Isoniazid", "4–6 mg/kg/day", 4, 6],
+    ["Rifampicin", "8–12 mg/kg/day", 8, 12],
+    ["Pyrazinamide", "20–30 mg/kg/day", 20, 30],
+    ["Ethambutol", "15–20 mg/kg/day", 15, 20]
+  ];
+  h += `<div class="gblock"><h3>คำนวณตามน้ำหนักตัว</h3>` + P.map(p =>
+    `<div class="gsub">${p[0]} ${p[1]}</div><div class="grow"><div class="gl"><span class="gf">ขนาดยา</span></div><div class="gr">${ok ? fmt(w*p[2]) + " ถึง " + fmt(w*p[3]) + ' <span class="gu">mg/day</span>' : "—"}</div></div>`
+  ).join("") + `</div>`;
+ 
+  const si = !ok ? -1 : (w < 35 ? 0 : (w <= 70 ? 1 : 2));
+  const S = [["&lt; 35 กก.","100 mg/day"],["&gt; 35–70 กก.","150 mg/day"],["&gt; 70 กก.","200 mg/day"]];
+  h += `<div class="gblock"><h3>Isoniazid ปรับตามน้ำหนักตัวและชนิด Acetylator gene (NAT2 genotype)</h3>
+    <div class="gnote" style="color:var(--ink)">Rapid และ Intermediate acetylator ใช้ขนาดยาปกติ · Slow acetylator ปรับขนาดยาดังนี้</div>
+    ${S.map((r,i) => `<div class="grow ${i===si?'hit':''}"><div class="gl">${r[0]}</div><div class="gr">${r[1]}</div></div>`).join("")}
+    <div class="gwarn">Isoniazid / Rifampicin / Pyrazinamide: ถ้าค่า ALT มากกว่า 150 รายงานแพทย์และปรับขนาดยา</div></div>`;
+  out.innerHTML = h;
+}
+ 
+/* ---------- มาสคอต: กระต่ายสีชมพู ตาสีเขียว จุดแก้มสีแดง ---------- */
+function bunnySVG(){
+  const pink = "#f8b4cd", line = "#e58cb0";
+  return `<svg viewBox="0 0 140 160" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="มาสคอตกระต่ายสีชมพู">
+    <g class="m-ear m-ear-l" style="transform-origin:52px 64px">
+      <ellipse cx="48" cy="34" rx="13" ry="32" fill="#f4a1c0" stroke="${line}" stroke-width="2" transform="rotate(-7 48 34)"/>
+      <ellipse cx="48" cy="38" rx="6" ry="21" fill="#fcd2e1" transform="rotate(-7 48 38)"/>
+    </g>
+    <g class="m-ear m-ear-r" style="transform-origin:88px 64px">
+      <ellipse cx="92" cy="34" rx="13" ry="32" fill="#f4a1c0" stroke="${line}" stroke-width="2" transform="rotate(7 92 34)"/>
+      <ellipse cx="92" cy="38" rx="6" ry="21" fill="#fcd2e1" transform="rotate(7 92 38)"/>
+    </g>
+    <g class="m-low">
+      <ellipse cx="70" cy="138" rx="32" ry="20" fill="${pink}" stroke="${line}" stroke-width="2"/>
+      <path d="M41 134 Q70 116 99 134 L101 152 Q70 160 39 152 Z" fill="#fff" stroke="#d3dbe0" stroke-width="1.5"/>
+      <path d="M67 131h6v5h5v6h-5v5h-6v-5h-5v-6h5z" fill="#1e9a54"/>
+      <ellipse cx="38" cy="132" rx="7" ry="11" fill="${pink}" stroke="${line}" stroke-width="2" transform="rotate(14 38 132)"/>
+      <g class="m-arm-r" style="transform-origin:100px 122px">
+        <ellipse cx="102" cy="130" rx="7" ry="11" fill="${pink}" stroke="${line}" stroke-width="2" transform="rotate(-14 102 130)"/>
+      </g>
+    </g>
+    <ellipse cx="70" cy="84" rx="42" ry="36" fill="${pink}" stroke="${line}" stroke-width="2"/>
+    <circle cx="42" cy="93" r="6.2" fill="#e11d2e" opacity=".92"/>
+    <circle cx="98" cy="93" r="6.2" fill="#e11d2e" opacity=".92"/>
+    <g class="m-eyes">
+      <circle cx="54" cy="80" r="8" fill="#2fa564"/><circle cx="54" cy="80" r="4.2" fill="#0f4d2b"/><circle cx="51.6" cy="77.4" r="2.2" fill="#fff"/>
+      <circle cx="86" cy="80" r="8" fill="#2fa564"/><circle cx="86" cy="80" r="4.2" fill="#0f4d2b"/><circle cx="83.6" cy="77.4" r="2.2" fill="#fff"/>
+    </g>
+    <ellipse cx="70" cy="91" rx="3.6" ry="2.7" fill="#e0557f"/>
+    <path d="M70 93.6v2.8M70 96.4c-2 3-6.5 3-8 .4M70 96.4c2 3 6.5 3 8 .4" fill="none" stroke="#c24570" stroke-width="1.8" stroke-linecap="round"/>
+    <g class="m-paws">
+      <ellipse cx="50" cy="114" rx="9" ry="7" fill="${pink}" stroke="${line}" stroke-width="2"/>
+      <ellipse cx="90" cy="114" rx="9" ry="7" fill="${pink}" stroke="${line}" stroke-width="2"/>
+    </g>
+  </svg>`;
+}
+document.querySelectorAll("[data-m]").forEach(el => { el.innerHTML = bunnySVG(); });
+ 
+function animateNum(el, to, dec){
+  if (window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches){ el.textContent = to.toFixed(dec); return; }
+  const t0 = performance.now(), dur = 700;
+  (function f(t){
+    const k = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - k, 3);
+    el.textContent = (to * e).toFixed(dec);
+    if (k < 1) requestAnimationFrame(f); else el.textContent = to.toFixed(dec);
+  })(t0);
+}
+ 
+function logout(){
+  try{ sessionStorage.removeItem("ok"); }catch(e){}
+  document.getElementById("pw").value = ""; document.getElementById("pwErr").textContent = "";
+  show("p1");
+}
+document.getElementById("barLogo").src = document.getElementById("loginLogo").src;
+ 
+buildWF();
+renderKids(); renderWF(); renderTB();
+</script>
+</body>
+</html>
+ 
+Claude finished the response
